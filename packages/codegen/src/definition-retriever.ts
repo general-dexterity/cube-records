@@ -1,7 +1,10 @@
-import type { CubeDefinition, EndpointResponse } from "./cube";
+import type { CubeDefinition, EndpointResponse } from './cube';
 
 export class DefinitionRetriever {
-  constructor(private readonly endpoint: string) {}
+  private endpoint: string;
+  constructor(endpoint: string) {
+    this.endpoint = endpoint;
+  }
 
   async retrieveDefinitions(): Promise<
     (CubeDefinition & {
@@ -37,7 +40,7 @@ export class DefinitionRetriever {
         acc[key].push(def);
         return acc;
       },
-      {} as { [key: string]: CubeDefinition[] },
+      {} as { [key: string]: CubeDefinition[] }
     );
   }
 }

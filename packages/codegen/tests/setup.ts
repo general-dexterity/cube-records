@@ -1,4 +1,4 @@
-import { vi } from "vitest";
+import { vi } from 'vitest';
 
 // Mock console methods globally to prevent log pollution during tests
 global.console = {
@@ -9,4 +9,3 @@ global.console = {
   info: vi.fn(),
   debug: vi.fn(),
 };
-

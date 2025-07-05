@@ -7,10 +7,9 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "typecheck": "turbo run typecheck",
-    "lint": "turbo run lint",
-    "lint:fix": "turbo run lint:fix",
-    "format": "turbo run format",
-    "format:check": "turbo run format:check",
+    "lint": "pnpm exec ultracite lint",
+    "lint:fix": "pnpm exec ultracite format",
+    "lint:fix:yolo": "npx ultracite format --unsafe",
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
     "commit": "cz",
@@ -20,14 +19,15 @@
   "license": "MIT",
   "packageManager": "pnpm@10.8.0",
   "devDependencies": {
-    "@biomejs/biome": "^2.0.0",
+    "@biomejs/biome": "2.0.6",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
     "husky": "^9.1.7",
     "turbo": "^2.5.4",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "ultracite": "5.0.32"
   },
   "pnpm": {
     "overrides": {

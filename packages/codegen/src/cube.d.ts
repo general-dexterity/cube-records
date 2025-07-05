@@ -1,4 +1,4 @@
-type CubeType = "cube" | "view";
+type CubeType = 'cube' | 'view';
 
 export interface EndpointResponse {
   readonly cubes: CubeDefinition[];
@@ -33,7 +33,7 @@ interface DimensionDefinition {
   readonly description?: string;
 }
 
-type DimensionType = "number" | "string" | "time" | "boolean";
+type DimensionType = 'number' | 'string' | 'time' | 'boolean';
 
 interface MeasureDefinition {
   readonly name: string;
@@ -49,7 +49,7 @@ interface MeasureDefinition {
   readonly description?: string;
 }
 
-type AggType = "sum" | "avg" | "count" | "countDistinct";
+type AggType = 'sum' | 'avg' | 'count' | 'countDistinct';
 
 interface MeasureDrillMembersGrouped {
   readonly measures: string[];
