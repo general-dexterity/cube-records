@@ -5,7 +5,9 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
-import type { CliArgs } from './types';
+import { CodeGenerator } from './code-generator';
+import type { CliArgs, TypeGeneratorOptions } from './types';
+import { isNil } from './utils';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const packageJson = JSON.parse(
@@ -16,29 +18,39 @@ const errorLogger = new Console(process.stderr);
 
 const program = new Command();
 
+const defaults: CliArgs = {
+  baseUrl: 'http://localhost:4000/cubejs-api',
+  watch: false,
+  delay: 5000,
+  exclude: '',
+  viewsOnly: false,
+  output: '-',
+};
+
 program
   .name('cube-record-gen')
   .version(packageJson.version)
   .description('Generate Cube Record type definitions from a CubeJS server.')
   .option(
-    '-b, --baseurl [value]',
+    '-b, --baseUrl [value]',
     "Set the CubeJS server's base URL",
-    'http://localhost:4000/cube-api/'
+    defaults.baseUrl
   )
   .option(
     '-w, --watch',
     'Watch for changes in the meta endpoint and regenerate the type definitions',
-    false
+    defaults.watch
   )
   .option(
     '-d, --duration [value]ms',
     'Set the how often we should check for changes in the meta endpoint',
     Number,
-    5000
+    defaults.delay
   )
   .option(
     '-o, --output [path]',
-    "The path of the file where the types should be generated. Use '-' to output to stdout"
+    "The path of the file where the types should be generated. Use '-' to output to stdout",
+    defaults.output
   )
   .parse(process.argv);
 
@@ -52,17 +64,37 @@ if (process.env.DEBUG) {
 }
 
 async function main() {
-  const output = args.output;
+  try {
+    const output = args.output;
 
-  if (!output) {
-    errorLogger.error(
-      'cube-record-gen: Missing required option: output. Use --help for more information.'
-    );
+    if (isNil(output)) {
+      errorLogger.error(
+        'cube-type-sync: Missing required option: output. Use --help for more information.'
+      );
+      process.exit(1);
+    }
+
+    const options: TypeGeneratorOptions = {
+      ...args,
+      output,
+      baseUrl: args.baseUrl ?? defaults.baseUrl,
+      exclude: args.exclude?.split(',') ?? [],
+      watchDelay: args.delay ?? defaults.delay,
+      watch: args.watch ?? defaults.watch,
+    };
+
+    // Remove debug output
+    // console.table(options);
+
+    await CodeGenerator.run(options);
+  } catch (error) {
+    errorLogger.error('An error occurred while generating types: ');
+    errorLogger.error(error);
+
+    errorLogger.error('CLI options: ');
+    errorLogger.table(args);
     process.exit(1);
   }
-
-  // Placeholder for the actual code generation logic.
-  return await Promise.resolve();
 }
 
 main().catch((_error) => {
