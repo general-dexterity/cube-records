@@ -25,7 +25,7 @@
       "dependsOn": ["^build"]
     },
     "test": {
-      "dependsOn": ["@general-dexterity/cube-records-sync#build"]
+      "dependsOn": ["^#build"]
     },
     "test:watch": {
       "cache": false,

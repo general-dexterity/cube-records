@@ -1,5 +1,5 @@
 {
-  "name": "@general-dexterity/cube-records-monorepo",
+  "name": "cube-records",
   "version": "0.0.1",
   "private": true,
   "type": "module",
