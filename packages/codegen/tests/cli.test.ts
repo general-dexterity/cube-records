@@ -35,6 +35,7 @@ describe("CLI", () => {
       execSync("node dist/index.js", {
         encoding: "utf8",
         cwd: join(__dirname, ".."),
+        stdio: "pipe",
       });
     }).toThrow();
   });

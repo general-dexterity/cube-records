@@ -8,7 +8,9 @@
   "bin": {
     "cube-records": "dist/index.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -21,7 +23,12 @@
     "test": "vitest --run",
     "test:watch": "vitest --watch"
   },
-  "keywords": ["cubejs", "react", "typescript", "cli"],
+  "keywords": [
+    "cubejs",
+    "react",
+    "typescript",
+    "cli"
+  ],
   "author": "Aliou Diallo <code@general-dexterity.com>",
   "license": "MIT",
   "dependencies": {
