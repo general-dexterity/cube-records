@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "CLI tool for generating Cube Record type definitions from a CubeJS server",
   "type": "module",
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "bin": {
     "codegen": "dist/index.js"
   },
