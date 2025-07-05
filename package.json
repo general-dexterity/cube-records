@@ -6,6 +6,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "dev:cli": "pnpm -F ./packages/codegen dev:cli",
     "typecheck": "turbo run typecheck",
     "lint": "pnpm exec ultracite lint",
     "lint:fix": "pnpm exec ultracite format",
