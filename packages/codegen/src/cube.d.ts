@@ -11,7 +11,7 @@ interface CubeDefinition {
   readonly isVisible: boolean;
   readonly public: boolean;
   readonly description?: string;
-  readonly connectedComponent: number;
+  readonly connectedComponent?: number;
   readonly measures: MeasureDefinition[];
   readonly dimensions: DimensionDefinition[];
   readonly segments: SegmentDefinition[];

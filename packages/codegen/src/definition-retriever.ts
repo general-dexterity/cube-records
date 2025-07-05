@@ -1,9 +1,10 @@
 import type { CubeDefinition, EndpointResponse } from './cube';
+import { isNil } from './utils';
 
 export class DefinitionRetriever {
-  private endpoint: string;
-  constructor(endpoint: string) {
-    this.endpoint = endpoint;
+  private baseUrl: string;
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
   }
 
   async retrieveDefinitions(): Promise<
@@ -11,13 +12,17 @@ export class DefinitionRetriever {
       joins: string[];
     })[]
   > {
-    const response = await fetch(this.endpoint);
+    const url = this.baseUrl.endsWith('/')
+      ? `${this.baseUrl}v1/meta`
+      : `${this.baseUrl}/v1/meta`;
+    const response = await fetch(url);
     const data = (await response.json()) as EndpointResponse;
     const cubes = data.cubes;
 
     const byRelation = this.groupByRelation(cubes);
     const cubesWithRelations = cubes.map((cube) => {
-      const relations = byRelation[cube.connectedComponent.toString()] ?? [];
+      const relationKey = cube.connectedComponent?.toString() ?? '';
+      const relations = byRelation[relationKey] ?? [];
 
       return {
         ...cube,
@@ -33,6 +38,10 @@ export class DefinitionRetriever {
   } {
     return defs.reduce(
       (acc, def) => {
+        if (isNil(def.connectedComponent)) {
+          return acc;
+        }
+
         const key = def.connectedComponent.toString();
         if (!acc[key]) {
           acc[key] = [];
