@@ -50,17 +50,17 @@ importers:
         version: 5.8.3
     devDependencies:
       '@cubejs-client/core':
-        specifier: ^1.3.12
-        version: 1.3.12
+        specifier: ^1.3.34
+        version: 1.3.34
       '@cubejs-client/react':
-        specifier: ^1.3.12
-        version: 1.3.12(react@19.1.0)
+        specifier: ^1.3.34
+        version: 1.3.34(react@19.1.0)
       '@types/node':
         specifier: ^22.0.0
         version: 22.15.21
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.3)
+        version: 8.5.0(jiti@2.4.2)(postcss@8.5.6)(typescript@5.8.3)
       vitest:
         specifier: ^3.1.3
         version: 3.1.3(@types/node@22.15.21)(jiti@2.4.2)
@@ -207,11 +207,11 @@ packages:
     resolution: {integrity: sha512-/yCrWGCoA1SVKOks25EGadP9Pnj0oAIHGpl2wH2M2Y46dPM2ueb8wyCVOD7O3WCTkaJ0IkKvzhl1JY7+uCT2Dw==}
     engines: {node: '>=v18'}
 
-  '@cubejs-client/core@1.3.12':
-    resolution: {integrity: sha512-r7la1CKNsohyeAIfYOLqWknvrRgSmNveTCH1xF2Qkmt7Be+eB+i9NeKtV9+/zVvPLT3rRChBxOXmu28lcfL+TA==}
+  '@cubejs-client/core@1.3.34':
+    resolution: {integrity: sha512-/brXQ9j9dQXrVo94GEQwrZH4vnx75wzfoO6+TFWQ8F/jNk4FOZP2zVErC8YSwTajgaJLZ3XWmYy3pbSYN1niDw==}
 
-  '@cubejs-client/react@1.3.12':
-    resolution: {integrity: sha512-znebWvXbGZmAqzG8EqRfWagMN7/n/ZDoTZTi++27IuPm2VJlJjwM+XaZphikRCjyp41KHhtxs3xh4El9wvn3SQ==}
+  '@cubejs-client/react@1.3.34':
+    resolution: {integrity: sha512-/PAOvL85jZeqsyOclt27ATjl8fsyVJxgKriwbKpnWywXAphcMZvqvAyYccfPy6HLVBDJ941H1JFqGTN7V5ntXg==}
     peerDependencies:
       react: '>=16.10.2'
 
@@ -1285,6 +1285,10 @@ packages:
     resolution: {integrity: sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==}
     engines: {node: ^10 || ^12 || >=14}
 
+  postcss@8.5.6:
+    resolution: {integrity: sha512-3Ybi1tAuwAP9s0r1UQ2J4n5Y0G05bJkpUIO0/bI9MhwmD70S5aTWbXGBwxHrelT+XM1k6dM0pk+SwNkpTRN7Pg==}
+    engines: {node: ^10 || ^12 || >=14}
+
   punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
@@ -1579,8 +1583,8 @@ packages:
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
-  uuid@8.3.2:
-    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+  uuid@11.1.0:
+    resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
     hasBin: true
 
   vite-node@3.1.3:
@@ -1884,22 +1888,21 @@ snapshots:
       '@types/conventional-commits-parser': 5.0.1
       chalk: 5.4.1
 
-  '@cubejs-client/core@1.3.12':
+  '@cubejs-client/core@1.3.34':
     dependencies:
-      '@babel/runtime': 7.27.1
       core-js: 3.42.0
       cross-fetch: 3.2.0
       dayjs: 1.11.13
       ramda: 0.27.2
       url-search-params-polyfill: 7.0.1
-      uuid: 8.3.2
+      uuid: 11.1.0
     transitivePeerDependencies:
       - encoding
 
-  '@cubejs-client/react@1.3.12(react@19.1.0)':
+  '@cubejs-client/react@1.3.34(react@19.1.0)':
     dependencies:
       '@babel/runtime': 7.27.1
-      '@cubejs-client/core': 1.3.12
+      '@cubejs-client/core': 1.3.34
       core-js: 3.42.0
       ramda: 0.27.2
       react: 19.1.0
@@ -2827,18 +2830,25 @@ snapshots:
       mlly: 1.7.4
       pathe: 2.0.3
 
-  postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3):
+  postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.6):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
       jiti: 2.4.2
-      postcss: 8.5.3
+      postcss: 8.5.6
 
   postcss@8.5.3:
     dependencies:
       nanoid: 3.3.11
       picocolors: 1.1.1
       source-map-js: 1.2.1
+
+  postcss@8.5.6:
+    dependencies:
+      nanoid: 3.3.11
+      picocolors: 1.1.1
+      source-map-js: 1.2.1
+    optional: true
 
   punycode@2.3.1: {}
 
@@ -3031,7 +3041,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup@8.5.0(jiti@2.4.2)(postcss@8.5.3)(typescript@5.8.3):
+  tsup@8.5.0(jiti@2.4.2)(postcss@8.5.6)(typescript@5.8.3):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.4)
       cac: 6.7.14
@@ -3042,7 +3052,7 @@ snapshots:
       fix-dts-default-cjs-exports: 1.0.1
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(jiti@2.4.2)(postcss@8.5.3)
+      postcss-load-config: 6.0.1(jiti@2.4.2)(postcss@8.5.6)
       resolve-from: 5.0.0
       rollup: 4.40.2
       source-map: 0.8.0-beta.0
@@ -3051,7 +3061,7 @@ snapshots:
       tinyglobby: 0.2.13
       tree-kill: 1.2.2
     optionalDependencies:
-      postcss: 8.5.3
+      postcss: 8.5.6
       typescript: 5.8.3
     transitivePeerDependencies:
       - jiti
@@ -3130,7 +3140,7 @@ snapshots:
 
   util-deprecate@1.0.2: {}
 
-  uuid@8.3.2: {}
+  uuid@11.1.0: {}
 
   vite-node@3.1.3(@types/node@22.15.21)(jiti@2.4.2):
     dependencies:

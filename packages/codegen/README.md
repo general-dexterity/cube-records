@@ -1,283 +1,207 @@
-# CubeJS TypeScript Type Generator
+# Cube Records CodeGen
 
-A modular code generator that creates TypeScript type definitions from CubeJS server metadata. This package provides both a library and CLI tool for generating strongly-typed interfaces for CubeJS cubes and views.
+A TypeScript code generator that creates type definitions from Cube.js server metadata for use with the `@general-dexterity/cube-records` package.
 
-## Architecture
+## Overview
 
-The code generator follows a clean, modular architecture with clear separation of concerns:
+This package generates TypeScript module augmentations that extend the `CubeRecordMap` interface from `@general-dexterity/cube-records`, enabling full type safety and autocompletion when using the `useCubeRecordQuery` hook.
 
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│  CodeGenerator  │───▶│  TypeGenerator   │───▶│  OutputWriter   │
-│   (Orchestrate) │    │ (Generate Types) │    │ (Write Output)  │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-         │                        │                        │
-         ▼                        ▼                        ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│DefinitionRetrive│    │  TypeScript AST  │    │  File/Stdout    │
-│ (Fetch Metadata)│    │      Nodes       │    │    Output       │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
+## Installation
+
+```bash
+npm install @general-dexterity/cube-records-codegen
+# or
+pnpm add @general-dexterity/cube-records-codegen
+# or
+yarn add @general-dexterity/cube-records-codegen
 ```
 
-### Core Components
-
-#### 1. **CodeGenerator**
-- **Purpose**: Main orchestrator that coordinates the entire type generation process
-- **Responsibilities**:
-  - Manages the generation workflow
-  - Handles watch mode for continuous updates
-  - Coordinates between other components
-  - Applies exclusion filters
-
-#### 2. **TypeGenerator** 
-- **Purpose**: Generates TypeScript AST nodes from cube definitions
-- **Responsibilities**:
-  - Creates TypeScript interface declarations
-  - Generates shared types (`CubeDimension`, `CubeMeasure`)
-  - Builds union types (`CubeModel`, `CubeView`, `CubeResource`)
-  - Focuses solely on type generation logic
-
-#### 3. **OutputWriter**
-- **Purpose**: Handles all output operations
-- **Responsibilities**:
-  - Converts TypeScript AST nodes to formatted strings
-  - Writes output to files or stdout
-  - Manages file operations and error handling
-  - Supports UTF-8 encoding
-
-#### 4. **DefinitionRetriever**
-- **Purpose**: Fetches cube metadata from CubeJS server
-- **Responsibilities**:
-  - Makes HTTP requests to CubeJS meta endpoint
-  - Transforms cube definitions with relation information
-  - Handles network errors and invalid responses
-
-## Features
-
-### Generated Types
-
-The generator creates several types of TypeScript definitions:
-
-#### Shared Base Types
-```typescript
-interface CubeDimension<T extends string | number | boolean> {
-  name: string;
-  type: T;
-  description?: string;
-}
-
-interface CubeMeasure<T extends string | number | boolean> {
-  name: string;
-  type: T;
-  description?: string;
-}
-```
-
-#### Cube-Specific Interfaces
-```typescript
-interface OrdersCubeModel {
-  name: "Orders";
-  measures: {
-    count: CubeMeasure<number>;
-    totalAmount: CubeMeasure<number>;
-  };
-  dimensions: {
-    status: CubeDimension<string>;
-    createdAt: CubeDimension<string>;
-  };
-  joins: ["Users", "Products"];
-  segments: string[];
-}
-```
-
-#### Union Types
-```typescript
-type CubeModel = OrdersCubeModel | ProductsCubeModel | ...;
-type CubeView = OrdersViewCubeView | ...;
-type CubeResource = CubeModel | CubeView;
-
-interface CubeModelNameMap {
-  Orders: OrdersCubeModel;
-  Products: ProductsCubeModel;
-  // ...
-}
-```
+## Quick Start
 
 ### CLI Usage
 
+Generate types from your Cube.js server:
+
 ```bash
 # Generate types to stdout
-cube-records --baseUrl http://localhost:4000/cubejs-api
+npx @general-dexterity/cube-records-codegen --baseUrl http://localhost:4000/cubejs-api
 
-# Generate types to file
-cube-records --output ./types/cubes.ts
+# Generate types to a file
+npx @general-dexterity/cube-records-codegen --baseUrl http://localhost:4000/cubejs-api --output ./src/cube-types.ts
 
 # Watch mode for development
-cube-records --watch --output ./types/cubes.ts
-
-# Exclude specific cubes
-cube-records --exclude "InternalCube,TestCube"
-
-# Custom polling interval (watch mode)
-cube-records --watch --duration 10000
+npx @general-dexterity/cube-records-codegen --baseUrl http://localhost:4000/cubejs-api --output ./src/cube-types.ts --watch
 ```
 
-### Library Usage
+### Generated Output
+
+The generator creates a clean module augmentation file:
 
 ```typescript
-import { CodeGenerator, TypeGenerator, OutputWriter } from '@general-dexterity/cube-records-codegen';
+declare module '@general-dexterity/cube-records' {
+  interface CubeRecordMap {
+    orders: {
+      measures: {
+        count: { type: number };
+        total: { type: number };
+      };
+      dimensions: {
+        id: { type: string };
+        status: { type: string };
+        createdAt: { type: string };
+      };
+      joins?: ['users'];
+    };
+    users: {
+      measures: {
+        count: { type: number };
+      };
+      dimensions: {
+        id: { type: string };
+        name: { type: string };
+        email: { type: string };
+      };
+      joins?: [];
+    };
+  }
+}
+```
 
-// Full generation workflow
+### Using Generated Types
+
+Once you've generated the types, import them in your application:
+
+```typescript
+// src/app.tsx
+import { useCubeRecordQuery } from '@general-dexterity/cube-records';
+import './cube-types'; // Import to register the global types
+
+function App() {
+  // Full TypeScript autocompletion for cube names, measures, and dimensions
+  const { data, isLoading } = useCubeRecordQuery('orders', {
+    measures: ['count', 'total'],
+    dimensions: ['status', 'createdAt'],
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+
+  return (
+    <div>
+      {data.map((row) => (
+        <div key={row.id}>
+          Status: {row.status}, Total: {row.total}
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+## CLI Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `--baseUrl` | `string` | `http://localhost:4000/cubejs-api` | Cube.js server base URL |
+| `--output` | `string` | `'-'` | Output file path or `'-'` for stdout |
+| `--watch` | `boolean` | `false` | Enable watch mode for continuous updates |
+| `--duration` | `number` | `5000` | Polling interval in milliseconds for watch mode |
+
+## Library Usage
+
+You can also use the generator programmatically:
+
+```typescript
+import { CodeGenerator } from '@general-dexterity/cube-records-codegen';
+
 const generator = new CodeGenerator({
   baseUrl: 'http://localhost:4000/cubejs-api',
-  output: './types/cubes.ts',
-  exclude: ['InternalCube'],
+  output: './src/cube-types.ts',
   watch: false,
   watchDelay: 5000
 });
 
 await generator.run();
-
-// Manual type generation
-const typeGenerator = new TypeGenerator();
-const outputWriter = new OutputWriter();
-
-// Get cube definitions (implement your own retrieval)
-const definitions = await getCubeDefinitions();
-
-// Generate TypeScript nodes
-const nodes = typeGenerator.generateTypes(definitions);
-
-// Write to file or stdout
-await outputWriter.writeNodes(nodes, './types/cubes.ts');
-await outputWriter.writeNodes(nodes, '-'); // stdout
 ```
 
-## Configuration Options
+## Integration Workflow
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `baseUrl` | `string` | `http://localhost:4000/cubejs-api` | CubeJS server base URL |
-| `output` | `string` | `'-'` | Output file path or `'-'` for stdout |
-| `exclude` | `string[]` | `[]` | Cube names to exclude from generation |
-| `watch` | `boolean` | `false` | Enable watch mode for continuous updates |
-| `watchDelay` | `number` | `5000` | Polling interval in milliseconds for watch mode |
+### 1. Set Up Your Cube.js Server
+
+Ensure your Cube.js server is running and accessible.
+
+### 2. Generate Types
+
+Run the code generator to create type definitions:
+
+```bash
+npx @general-dexterity/cube-records-codegen --baseUrl http://localhost:4000/cubejs-api --output ./src/cube-types.ts
+```
+
+### 3. Import Types in Your App
+
+Import the generated types to register the global interface augmentation:
+
+```typescript
+import './cube-types';
+```
+
+### 4. Use with Full Type Safety
+
+Now you have full autocompletion and type safety:
+
+```typescript
+const { data } = useCubeRecordQuery('orders', {
+  measures: ['count'], // ✅ Autocompleted from your schema
+  dimensions: ['status'], // ✅ Autocompleted from your schema
+});
+
+// data is fully typed based on your query
+```
+
+## Development Workflow
+
+For development, use watch mode to automatically regenerate types when your Cube.js schema changes:
+
+```bash
+npx @general-dexterity/cube-records-codegen --baseUrl http://localhost:4000/cubejs-api --output ./src/cube-types.ts --watch
+```
+
+## Architecture
+
+The generator uses a clean, modular architecture:
+
+- **CodeGenerator**: Orchestrates the generation process
+- **TypeGenerator**: Creates TypeScript AST nodes from cube definitions  
+- **OutputWriter**: Handles file output operations
+- **DefinitionRetriever**: Fetches metadata from Cube.js server
 
 ## Development
-
-### Project Structure
-
-```
-src/
-├── index.ts              # CLI entry point
-├── code-generator.ts     # Main orchestrator
-├── type-generator.ts     # TypeScript AST generation
-├── output-writer.ts      # Output handling
-├── definition-retriever.ts # CubeJS metadata fetching
-├── constants.ts          # Naming constants
-├── utils.ts             # Utility functions
-├── types.ts             # Type definitions
-└── cube.d.ts            # CubeJS type definitions
-
-tests/
-├── type-generator.test.ts
-├── output-writer.test.ts
-├── definition-retriever.test.ts
-└── cli.test.ts
-```
 
 ### Building
 
 ```bash
-# Build the package
 pnpm build
-
-# Development mode
-pnpm dev
-
-# Type checking
-pnpm typecheck
 ```
 
 ### Testing
 
 ```bash
-# Run all tests
 pnpm test
-
-# Watch mode
-pnpm test:watch
-
-# Specific test file
-vitest run tests/type-generator.test.ts
 ```
 
-### Code Quality
+### Development Mode
 
 ```bash
-# Lint code
-pnpm lint
-
-# Auto-fix linting issues
-pnpm lint:fix
-
-# Format code
-pnpm format
+pnpm dev
 ```
 
-## Design Principles
+## Generated Type Structure
 
-### 1. **Separation of Concerns**
-Each class has a single, well-defined responsibility:
-- `TypeGenerator`: Pure type generation logic
-- `OutputWriter`: Pure output operations
-- `CodeGenerator`: Orchestration only
-- `DefinitionRetriever`: Data fetching only
+The generator creates types that match the structure expected by `@general-dexterity/cube-records`:
 
-### 2. **Testability**
-- Small, focused classes are easy to unit test
-- Pure functions with predictable inputs/outputs
-- Comprehensive test coverage for all components
-- Mocked dependencies for isolated testing
+- **Cube names**: Converted to lowercase (e.g., `Orders` → `orders`)
+- **Measures/Dimensions**: Simple `{ type: T }` format for easy type extraction
+- **Joins**: Optional readonly arrays with lowercase join names
+- **Module augmentation**: Extends the exported `CubeRecordMap` interface
 
-### 3. **Modularity**
-- Classes can be used independently
-- Easy to extend or replace individual components
-- Clear interfaces between components
-- Minimal coupling between modules
-
-### 4. **Type Safety**
-- Full TypeScript coverage
-- Leverages TypeScript compiler API for AST generation
-- Type-safe configuration and options
-- Runtime type checking where appropriate
-
-## Edge Cases and Limitations
-
-### Potential Issues with Type Generation
-
-1. **Empty Model/View Lists**: If no models or views exist, union types may be incorrectly generated
-2. **Invalid TypeScript Identifiers**: Cube names with special characters may create invalid interface names
-3. **Reserved Keywords**: Cubes named with TypeScript keywords could cause compilation errors
-4. **Name Collisions**: Different cube names that transform to the same identifier
-5. **Very Long Names**: Extremely long cube names might exceed identifier limits
-6. **Unicode Characters**: Special characters that don't translate well to valid identifiers
-
-### Recommendations
-
-- Validate cube names before generation
-- Implement name sanitization for edge cases
-- Add warnings for potentially problematic cube names
-- Consider adding a validation mode to check for issues
-
-## Contributing
-
-1. Follow the existing architecture patterns
-2. Add tests for new functionality
-3. Update this README for significant changes
-4. Use conventional commit messages
-5. Ensure all linting and type checking passes
-
-## License
-
-This package is part of the cube-records project and follows the same licensing terms.
+This structure ensures perfect compatibility with the records package while providing excellent developer experience with full TypeScript autocompletion.

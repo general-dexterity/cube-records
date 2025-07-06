@@ -151,7 +151,7 @@ describe('TypeGenerator', () => {
     const result = typeGenerator.generateTypes(definitions);
 
     expect(
-      result.some((node) => node.name?.escapedText === 'CubeModelNameMap')
+      result.some((node) => node.name?.escapedText === 'CubeRecordMap')
     ).toBe(true);
     expect(result.some((node) => node.name?.escapedText === 'CubeModel')).toBe(
       true
