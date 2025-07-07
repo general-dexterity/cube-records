@@ -1,3 +1,7 @@
 dist
 .turbo
 node_modules
+
+data.duckdb
+
+*.tsbuildinfo

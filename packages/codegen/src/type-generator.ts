@@ -1,11 +1,10 @@
 import ts from 'typescript';
-import { ModelInterfaceNameSuffix, ViewInterfaceNameSuffix } from './constants';
-import type { CubeDefinitionWithRelations } from './cube';
-import {
-  cubeMeasureToPropertyName,
-  cubeTitleToTsInterfaceName,
-  dimensionTypeToTsType,
-} from './utils';
+import type {
+  CubeDefinitionWithRelations,
+  DimensionDefinition,
+  MeasureDefinition,
+} from './cube';
+import { cubeMeasureToPropertyName, dimensionTypeToTsType } from './utils';
 
 export class TypeGenerator {
   generateTypes(definitions: CubeDefinitionWithRelations[]): ts.Declaration[] {
@@ -69,7 +68,7 @@ export class TypeGenerator {
   }
 
   // Helper method to create measures type from cube definition
-  private createMeasuresType(measures: any[]): ts.TypeNode {
+  private createMeasuresType(measures: MeasureDefinition[]): ts.TypeNode {
     return ts.factory.createTypeLiteralNode(
       measures.map((measure) => {
         const propertyName = cubeMeasureToPropertyName(measure.name);
@@ -94,7 +93,7 @@ export class TypeGenerator {
   }
 
   // Helper method to create dimensions type from cube definition
-  private createDimensionsType(dimensions: any[]): ts.TypeNode {
+  private createDimensionsType(dimensions: DimensionDefinition[]): ts.TypeNode {
     return ts.factory.createTypeLiteralNode(
       dimensions.map((dimension) => {
         const propertyName = cubeMeasureToPropertyName(dimension.name);

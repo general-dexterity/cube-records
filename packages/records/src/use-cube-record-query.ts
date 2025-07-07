@@ -5,7 +5,10 @@ import type {
   TimeDimension,
   UnaryOperator,
 } from '@cubejs-client/core';
-import { useCubeQuery as useCoreCubeQuery } from '@cubejs-client/react';
+import {
+  type UseCubeQueryOptions as UseCoreCubeQueryOptions,
+  useCubeQuery as useCoreCubeQuery,
+} from '@cubejs-client/react';
 import type {
   CubeRecordName,
   CubeRecordQueryDimension,
@@ -139,7 +142,8 @@ export function useCubeRecordQuery<
   query: CubeRecordQueryParams<N> & {
     measures?: M;
     dimensions?: D;
-  }
+  },
+  options?: UseCoreCubeQueryOptions
 ): CubeRecordQueryResult<N, M, D> {
   // Build the Cube.js query
   const cubeQuery: CoreCubeQuery = {
@@ -178,7 +182,10 @@ export function useCubeRecordQuery<
   };
 
   // Use the core Cube.js query hook
-  const { resultSet, isLoading, error, refetch } = useCoreCubeQuery(cubeQuery);
+  const { resultSet, isLoading, error, refetch } = useCoreCubeQuery(
+    cubeQuery,
+    options
+  );
 
   // Format the result data
   const formattedData = formatResultSet(resultSet, cubeRecordName);
