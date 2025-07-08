@@ -15,7 +15,8 @@
     "dev:cli": "node dist/index.js",
     "typecheck": "tsc --noEmit",
     "test": "vitest --run",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "cubejs",

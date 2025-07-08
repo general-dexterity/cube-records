@@ -21,7 +21,8 @@
     "format": "biome format --write .",
     "format:check": "biome format .",
     "test": "vitest --run",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "cubejs",
