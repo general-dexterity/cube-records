@@ -68,11 +68,11 @@ importers:
   packages/records:
     dependencies:
       '@cubejs-client/core':
-        specifier: ^0.35.0
-        version: 0.35.23
+        specifier: ^1.3.34
+        version: 1.3.34
       '@cubejs-client/react':
-        specifier: ^0.35.0
-        version: 0.35.48(react@19.1.0)
+        specifier: ^1.3.34
+        version: 1.3.34(react@19.1.0)
       react:
         specifier: ^18.0.0 || ^19.0.0
         version: 19.1.0
@@ -241,16 +241,8 @@ packages:
     resolution: {integrity: sha512-/yCrWGCoA1SVKOks25EGadP9Pnj0oAIHGpl2wH2M2Y46dPM2ueb8wyCVOD7O3WCTkaJ0IkKvzhl1JY7+uCT2Dw==}
     engines: {node: '>=v18'}
 
-  '@cubejs-client/core@0.35.23':
-    resolution: {integrity: sha512-tGX7z4P/RJ0E9SrLPmSuRDQGJxgJqERW5jpYImuXMrlumRktyWa4OOIcnAxbItQqf3m0DpWPr5eN0fAkd1gZAA==}
-
   '@cubejs-client/core@1.3.34':
     resolution: {integrity: sha512-/brXQ9j9dQXrVo94GEQwrZH4vnx75wzfoO6+TFWQ8F/jNk4FOZP2zVErC8YSwTajgaJLZ3XWmYy3pbSYN1niDw==}
-
-  '@cubejs-client/react@0.35.48':
-    resolution: {integrity: sha512-EJ9a72szX2Vge7jjWcbeMF3r7y4LGcgN7/HaSXOllMEnaR6SIG+0XH+cgN7EaKz1RMWUIPytpeY2FB8aHacF+Q==}
-    peerDependencies:
-      react: '>=16.10.2'
 
   '@cubejs-client/react@1.3.34':
     resolution: {integrity: sha512-/PAOvL85jZeqsyOclt27ATjl8fsyVJxgKriwbKpnWywXAphcMZvqvAyYccfPy6HLVBDJ941H1JFqGTN7V5ntXg==}
@@ -1651,10 +1643,6 @@ packages:
     resolution: {integrity: sha512-0/A9rDy9P7cJ+8w1c9WD9V//9Wj15Ce2MPz8Ri6032usz+NfePxx5AcN3bN+r6ZL6jEo066/yNYB3tn4pQEx+A==}
     hasBin: true
 
-  uuid@8.3.2:
-    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
-    hasBin: true
-
   vite-node@3.1.3:
     resolution: {integrity: sha512-uHV4plJ2IxCl4u1up1FQRrqclylKAogbtBfOTwcuJ28xFi+89PZ57BRh+naIRvH70HPwxy5QHYzg1OrEaC7AbA==}
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
@@ -1956,18 +1944,6 @@ snapshots:
       '@types/conventional-commits-parser': 5.0.1
       chalk: 5.4.1
 
-  '@cubejs-client/core@0.35.23':
-    dependencies:
-      '@babel/runtime': 7.27.1
-      core-js: 3.42.0
-      cross-fetch: 3.2.0
-      dayjs: 1.11.13
-      ramda: 0.27.2
-      url-search-params-polyfill: 7.0.1
-      uuid: 8.3.2
-    transitivePeerDependencies:
-      - encoding
-
   '@cubejs-client/core@1.3.34':
     dependencies:
       core-js: 3.42.0
@@ -1976,16 +1952,6 @@ snapshots:
       ramda: 0.27.2
       url-search-params-polyfill: 7.0.1
       uuid: 11.1.0
-    transitivePeerDependencies:
-      - encoding
-
-  '@cubejs-client/react@0.35.48(react@19.1.0)':
-    dependencies:
-      '@babel/runtime': 7.27.1
-      '@cubejs-client/core': 0.35.23
-      core-js: 3.42.0
-      ramda: 0.27.2
-      react: 19.1.0
     transitivePeerDependencies:
       - encoding
 
@@ -3251,8 +3217,6 @@ snapshots:
   util-deprecate@1.0.2: {}
 
   uuid@11.1.0: {}
-
-  uuid@8.3.2: {}
 
   vite-node@3.1.3(@types/node@22.15.21)(jiti@2.4.2):
     dependencies:
