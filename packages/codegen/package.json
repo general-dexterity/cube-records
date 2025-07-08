@@ -1,6 +1,6 @@
 {
   "name": "@general-dexterity/cube-records-codegen",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "CLI tool for generating Cube Record type definitions from a CubeJS server",
   "type": "module",
   "engines": {
