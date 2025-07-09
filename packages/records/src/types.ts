@@ -23,7 +23,9 @@ export interface CubeRecordDefinition {
  *   }
  * }
  */
-export type CubeRecordMap = {};
+
+// biome-ignore lint/suspicious/noEmptyInterface: To allow users to extend this interface.
+export interface CubeRecordMap {}
 
 /**
  * Type for cube record names
