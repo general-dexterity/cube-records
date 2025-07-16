@@ -126,6 +126,19 @@ const formatResultSet = <_N extends CubeRecordName>(
   });
 };
 
+type UseCubeRecordQueryProps<
+  N extends CubeRecordName,
+  M extends CubeRecordQueryMeasure<N>[] = [],
+  D extends CubeRecordQueryDimension<N>[] = [],
+> = {
+  model: N;
+  query: CubeRecordQueryParams<N> & {
+    measures?: M;
+    dimensions?: D;
+  };
+  options?: UseCoreCubeQueryOptions;
+};
+
 /**
  * A strongly-typed wrapper around Cube.js useCubeQuery hook for CubeRecords
  *
@@ -137,14 +150,11 @@ export function useCubeRecordQuery<
   N extends CubeRecordName,
   M extends CubeRecordQueryMeasure<N>[] = [],
   D extends CubeRecordQueryDimension<N>[] = [],
->(
-  cubeRecordName: N,
-  query: CubeRecordQueryParams<N> & {
-    measures?: M;
-    dimensions?: D;
-  },
-  options?: UseCoreCubeQueryOptions
-): CubeRecordQueryResult<N, M, D> {
+>({
+  model: cubeRecordName,
+  query,
+  options,
+}: UseCubeRecordQueryProps<N, M, D>): CubeRecordQueryResult<N, M, D> {
   // Build the Cube.js query
   const cubeQuery: CoreCubeQuery = {
     measures: query.measures?.map((measure) =>
