@@ -12,9 +12,6 @@ describe('DefinitionRetriever', () => {
     global.fetch = vi.fn();
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
 
   it('retrieves and transforms cube definitions with relations', async () => {
     const mockCubes: CubeDefinition[] = [

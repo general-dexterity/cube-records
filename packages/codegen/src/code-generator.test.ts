@@ -48,9 +48,6 @@ describe('CodeGenerator', () => {
     vi.clearAllMocks();
   });
 
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
 
   it('runs the code generation process', async () => {
     const mockRetrieveDefinitions = vi.fn().mockResolvedValue(mockDefinitions);

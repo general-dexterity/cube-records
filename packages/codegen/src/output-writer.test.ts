@@ -10,18 +10,12 @@ describe('OutputWriter', () => {
   const testContent = 'interface Test {\n  name: string;\n}';
   const testFilePath = join(process.cwd(), 'test-output.ts');
 
-  beforeEach(() => {
-    // Mock console.log to capture stdout output
-    // biome-ignore lint/suspicious/noEmptyBlockStatements: Empty mock function is intentional
-    vi.spyOn(console, 'log').mockImplementation(() => {});
-  });
 
   afterEach(async () => {
     // Clean up test file if it exists
     if (existsSync(testFilePath)) {
       await unlink(testFilePath);
     }
-    vi.restoreAllMocks();
   });
 
   it('writes content to stdout when path is "-"', async () => {
@@ -151,4 +145,3 @@ describe('OutputWriter', () => {
     expect(fileContent).toBe('');
   });
 });
-
