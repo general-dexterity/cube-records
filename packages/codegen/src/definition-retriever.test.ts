@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import type { CubeDefinition, EndpointResponse } from '../src/cube';
-import { DefinitionRetriever } from '../src/definition-retriever';
+import { createMock } from '../tests/utils/mock';
+import type { CubeDefinition, EndpointResponse } from './cube';
+import { DefinitionRetriever } from './definition-retriever';
 
 describe('DefinitionRetriever', () => {
   const mockEndpoint = 'https://api.example.com/cubes';
@@ -60,7 +61,7 @@ describe('DefinitionRetriever', () => {
 
     const result = await retriever.retrieveDefinitions();
 
-    expect(fetch).toHaveBeenCalledWith(mockEndpoint);
+    expect(fetch).toHaveBeenCalledWith('https://api.example.com/cubes/v1/meta');
     expect(result).toHaveLength(3);
 
     const ordersResult = result.find((c) => c.name === 'Orders');
@@ -71,6 +72,21 @@ describe('DefinitionRetriever', () => {
 
     const productsResult = result.find((c) => c.name === 'Products');
     expect(productsResult?.joins).toEqual([]);
+  });
+
+  it('handles endpoints with trailing slash', async () => {
+    const retrieverWithSlash = new DefinitionRetriever(
+      'https://api.example.com/cubes/'
+    );
+    const mockResponse: EndpointResponse = { cubes: [] };
+
+    vi.mocked(global.fetch).mockResolvedValueOnce({
+      json: async () => mockResponse,
+    } as Response);
+
+    await retrieverWithSlash.retrieveDefinitions();
+
+    expect(fetch).toHaveBeenCalledWith('https://api.example.com/cubes/v1/meta');
   });
 
   it('handles empty cube list', async () => {
@@ -179,6 +195,32 @@ describe('DefinitionRetriever', () => {
     expect(cubeD?.joins).toEqual(['C']);
   });
 
+  it('handles cubes without connected component', async () => {
+    const mockCubes: CubeDefinition[] = [
+      {
+        name: 'NoComponent',
+        type: 'cube',
+        title: 'No Component',
+        isVisible: true,
+        public: true,
+        measures: [],
+        dimensions: [],
+        segments: [],
+      },
+    ];
+
+    const mockResponse: EndpointResponse = { cubes: mockCubes };
+
+    vi.mocked(global.fetch).mockResolvedValueOnce({
+      json: async () => mockResponse,
+    } as Response);
+
+    const result = await retriever.retrieveDefinitions();
+
+    expect(result).toHaveLength(1);
+    expect(result[0].joins).toEqual([]);
+  });
+
   it('handles fetch errors', async () => {
     vi.mocked(global.fetch).mockRejectedValueOnce(new Error('Network error'));
 
@@ -188,11 +230,16 @@ describe('DefinitionRetriever', () => {
   });
 
   it('handles invalid JSON response', async () => {
-    const response = new Response('Invalid JSON');
-    vi.mocked(global.fetch).mockResolvedValueOnce(response);
+    vi.mocked(global.fetch).mockResolvedValueOnce(
+      createMock<Response>({
+        json: () => {
+          throw new SyntaxError('Unexpected token < in JSON at position 0');
+        },
+      })
+    );
 
     await expect(retriever.retrieveDefinitions()).rejects.toThrow(
-      'Invalid JSON'
+      'Unexpected token < in JSON at position 0'
     );
   });
 });

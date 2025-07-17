@@ -15,36 +15,32 @@ export class TypeGenerator {
   private createModuleAugmentation(
     definitions: CubeDefinitionWithRelations[]
   ): ts.Declaration[] {
-    // Create the CubeRecordMap interface with inline structure
+    // Create the CubeRecordMap interface (without export modifier)
     const cubeRecordMap = ts.factory.createInterfaceDeclaration(
-      undefined,
+      undefined, // No modifiers
       ts.factory.createIdentifier('CubeRecordMap'),
       [],
       undefined,
       definitions.map((definition) => {
         const cubeNameLowercase = definition.name.toLowerCase();
 
-        // Create simplified inline structure
         return ts.factory.createPropertySignature(
           undefined,
           ts.factory.createIdentifier(cubeNameLowercase),
           undefined,
           ts.factory.createTypeLiteralNode([
-            // Measures property with simplified structure
             ts.factory.createPropertySignature(
               undefined,
               ts.factory.createIdentifier('measures'),
               undefined,
               this.createMeasuresType(definition.measures)
             ),
-            // Dimensions property with simplified structure
             ts.factory.createPropertySignature(
               undefined,
               ts.factory.createIdentifier('dimensions'),
               undefined,
               this.createDimensionsType(definition.dimensions)
             ),
-            // Joins property as readonly array
             ts.factory.createPropertySignature(
               undefined,
               ts.factory.createIdentifier('joins'),
@@ -56,7 +52,24 @@ export class TypeGenerator {
       })
     );
 
-    // Wrap CubeRecordMap in a module augmentation for the records package
+    // Create an import statement
+    const importDeclaration = ts.factory.createImportDeclaration(
+      undefined,
+      undefined,
+      ts.factory.createStringLiteral('@general-dexterity/cube-records'),
+      undefined
+    );
+
+    // Create an empty export statement
+    const emptyExport = ts.factory.createExportDeclaration(
+      undefined,
+      false,
+      ts.factory.createNamedExports([]),
+      undefined,
+      undefined
+    );
+
+    // Create module augmentation with empty export first
     const moduleAugmentation = ts.factory.createModuleDeclaration(
       [ts.factory.createToken(ts.SyntaxKind.DeclareKeyword)],
       ts.factory.createStringLiteral('@general-dexterity/cube-records'),
@@ -64,7 +77,7 @@ export class TypeGenerator {
       ts.NodeFlags.None
     );
 
-    return [moduleAugmentation];
+    return [importDeclaration, moduleAugmentation, emptyExport];
   }
 
   // Helper method to create measures type from cube definition

@@ -3,7 +3,7 @@ import { readFile, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import ts from 'typescript';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { OutputWriter } from '../src/output-writer';
+import { OutputWriter } from './output-writer';
 
 describe('OutputWriter', () => {
   const outputWriter = new OutputWriter();
@@ -151,3 +151,4 @@ describe('OutputWriter', () => {
     expect(fileContent).toBe('');
   });
 });
+
