@@ -1,6 +1,6 @@
-import "@general-dexterity/cube-records";
+import '@general-dexterity/cube-records';
 
-declare module "@general-dexterity/cube-records" {
+declare module '@general-dexterity/cube-records' {
   interface CubeRecordMap {
     users: {
       measures: {
@@ -29,5 +29,3 @@ declare module "@general-dexterity/cube-records" {
     };
   }
 }
-
-export {};

@@ -2,14 +2,13 @@ import { existsSync } from 'node:fs';
 import { readFile, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
 import ts from 'typescript';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import { OutputWriter } from './output-writer';
 
 describe('OutputWriter', () => {
   const outputWriter = new OutputWriter();
   const testContent = 'interface Test {\n  name: string;\n}';
   const testFilePath = join(process.cwd(), 'test-output.ts');
-
 
   afterEach(async () => {
     // Clean up test file if it exists

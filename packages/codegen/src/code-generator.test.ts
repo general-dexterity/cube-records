@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createMock } from '../tests/utils/mock';
 import { CodeGenerator } from './code-generator';
 import { DefinitionRetriever } from './definition-retriever';
@@ -47,7 +47,6 @@ describe('CodeGenerator', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
-
 
   it('runs the code generation process', async () => {
     const mockRetrieveDefinitions = vi.fn().mockResolvedValue(mockDefinitions);

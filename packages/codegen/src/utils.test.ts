@@ -1,5 +1,5 @@
 import ts from 'typescript';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
   cubeMeasureToPropertyName,
   cubeTitleToTsInterfaceName,
@@ -7,8 +7,6 @@ import {
   isNil,
   pascal,
 } from './utils';
-
-
 
 describe('dimensionTypeToTsType', () => {
   it('converts number type correctly', () => {

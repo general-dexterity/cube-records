@@ -1,12 +1,10 @@
 import ts from 'typescript';
-import { afterEach, assert, beforeEach, describe, expect, it, vi } from 'vitest';
+import { assert, describe, expect, it } from 'vitest';
 import type { CubeDefinitionWithRelations } from './cube';
 import { TypeGenerator } from './type-generator';
 
 describe('TypeGenerator', () => {
   const typeGenerator = new TypeGenerator();
-
-
 
   const mockCubeDefinition: CubeDefinitionWithRelations = {
     name: 'Orders',

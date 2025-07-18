@@ -41,9 +41,9 @@ jobs:
 
       - name: Test CLI
         run: |
-          cd packages/cli
-          pnpm dev:cli --version
-          pnpm dev:cli --help
+          cd packages/codegen
+          node dist/index.js --version
+          node dist/index.js --help
 
   # publish-check:
   #   name: Publish Check

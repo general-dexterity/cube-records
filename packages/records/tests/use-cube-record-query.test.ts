@@ -2,8 +2,8 @@
 import type { ResultSet } from '@cubejs-client/core';
 import { renderHook } from '@testing-library/react';
 import { assert, beforeEach, describe, it, type Mock, vi } from 'vitest';
-import { createMock } from './utils/mock';
 import { useCubeRecordQuery } from '../src/use-cube-record-query';
+import { createMock } from './utils/mock';
 
 // Mock the @cubejs-client/react module
 vi.mock('@cubejs-client/react', () => ({

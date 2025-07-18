@@ -1,4 +1,4 @@
-import { assert, describe, it } from 'vitest';
+import { assert, describe, it, vi } from 'vitest';
 import type { CubeRecordDefinition } from '../src/types';
 
 // Type predicate functions for testing

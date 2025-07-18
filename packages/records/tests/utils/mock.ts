@@ -74,7 +74,8 @@ const createProxy: {
         return cache.get(prop);
       }
 
-      const checkProp = (obj as any)[prop];
+      // @ts-expect-error
+      const checkProp = obj[prop];
 
       let mockedProp: unknown;
 

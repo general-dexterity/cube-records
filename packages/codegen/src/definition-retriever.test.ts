@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createMock } from '../tests/utils/mock';
 import type { CubeDefinition, EndpointResponse } from './cube';
 import { DefinitionRetriever } from './definition-retriever';
@@ -11,7 +11,6 @@ describe('DefinitionRetriever', () => {
     retriever = new DefinitionRetriever(mockEndpoint);
     global.fetch = vi.fn();
   });
-
 
   it('retrieves and transforms cube definitions with relations', async () => {
     const mockCubes: CubeDefinition[] = [
