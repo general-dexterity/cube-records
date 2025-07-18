@@ -81,16 +81,19 @@ import { useCubeRecordQuery } from '@general-dexterity/cube-records';
 import './cube-types'; // Import generated types
 
 function OrderAnalytics() {
-  const { data, isLoading } = useCubeRecordQuery('orders', {
-    measures: ['count', 'total_amount'],
-    dimensions: ['status', 'stores.name', 'stores.city'],
-    filters: [{
-      member: 'created_at',
-      operator: 'inDateRange',
-      values: ['2024-01-01', '2024-12-31']
-    }],
-    order: {
-      total_amount: 'desc'
+  const { data, isLoading } = useCubeRecordQuery({
+    model: 'orders',
+    query: {
+      measures: ['count', 'total_amount'],
+      dimensions: ['status', 'stores.name', 'stores.city'],
+      filters: [{
+        member: 'created_at',
+        operator: 'inDateRange',
+        values: ['2024-01-01', '2024-12-31']
+      }],
+      order: {
+        total_amount: 'desc'
+      }
     }
   });
 
