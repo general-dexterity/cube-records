@@ -7,14 +7,14 @@ import type {
 import { cubeMeasureToPropertyName, dimensionTypeToTsType } from './utils';
 
 export class TypeGenerator {
-  generateTypes(definitions: CubeDefinitionWithRelations[]): ts.Declaration[] {
+  generateTypes(definitions: CubeDefinitionWithRelations[]): ts.Statement[] {
     // Only generate the module augmentation for CubeRecordMap
     return this.createModuleAugmentation(definitions);
   }
 
   private createModuleAugmentation(
     definitions: CubeDefinitionWithRelations[]
-  ): ts.Declaration[] {
+  ): ts.Statement[] {
     // Create the CubeRecordMap interface (without export modifier)
     const cubeRecordMap = ts.factory.createInterfaceDeclaration(
       undefined, // No modifiers

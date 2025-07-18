@@ -5,7 +5,7 @@ import ts from 'typescript';
 const errorLogger = new Console(process.stderr);
 
 export class OutputWriter {
-  async writeNodes(nodes: ts.Declaration[], path: string): Promise<void> {
+  async writeNodes(nodes: ts.Statement[], path: string): Promise<void> {
     const content = this.printNodes(nodes);
     await this.writeOutput(content, path);
   }
@@ -27,7 +27,7 @@ export class OutputWriter {
     }
   }
 
-  private printNodes(nodes: ts.Declaration[]): string {
+  private printNodes(nodes: ts.Statement[]): string {
     const sourceFile = ts.createSourceFile(
       'output.ts',
       '',
