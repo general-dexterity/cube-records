@@ -126,7 +126,7 @@ const formatResultSet = <_N extends CubeRecordName>(
   });
 };
 
-type UseCubeRecordQueryProps<
+export type UseCubeRecordQueryProps<
   N extends CubeRecordName,
   M extends CubeRecordQueryMeasure<N>[] = [],
   D extends CubeRecordQueryDimension<N>[] = [],
