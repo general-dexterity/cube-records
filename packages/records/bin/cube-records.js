@@ -64,13 +64,13 @@ if (
     const codegenBin = join(
       __dirname,
       '..',
-      'node_modules',
-      '.bin',
-      'cube-records-codegen'
+      '..',
+      'codegen',
+      'dist',
+      'index.js'
     );
-    const child = spawn(codegenBin, ['--help'], {
+    const child = spawn('node', [codegenBin, '--help'], {
       stdio: 'inherit',
-      shell: true,
     });
     child.on('exit', (code) => {
       process.exit(code || 0);
@@ -83,15 +83,15 @@ if (
   const codegenBin = join(
     __dirname,
     '..',
-    'node_modules',
-    '.bin',
-    'cube-records-codegen'
+    '..',
+    'codegen',
+    'dist',
+    'index.js'
   );
   const codegenArgs = args.slice(1);
 
-  const child = spawn(codegenBin, codegenArgs, {
+  const child = spawn('node', [codegenBin, ...codegenArgs], {
     stdio: 'inherit',
-    shell: true,
   });
 
   child.on('exit', (code) => {

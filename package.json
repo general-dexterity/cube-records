@@ -16,8 +16,7 @@
     "test": "turbo run test",
     "test:watch": "turbo run test:watch",
     "commit": "cz",
-    "prepare": "husky",
-    "publish": "turbo run publish"
+    "prepare": "husky"
   },
   "author": "Aliou Diallo <code@general-dexterity.com>",
   "license": "MIT",
