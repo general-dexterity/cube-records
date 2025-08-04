@@ -30,6 +30,11 @@
     "test:watch": {
       "cache": false,
       "persistent": true
+    },
+    "publish": {
+      "dependsOn": ["build"],
+      "outputs": ["dist/**"],
+      "cache": false
     }
   }
 }
