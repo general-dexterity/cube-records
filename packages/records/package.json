@@ -21,12 +21,9 @@
       }
     }
   },
-  "bin": {
-    "cube-records": "./bin/cube-records.js"
-  },
+
   "files": [
     "dist",
-    "bin",
     "README.md"
   ],
   "scripts": {
@@ -39,8 +36,7 @@
     "format:check": "biome format .",
     "test": "vitest --run",
     "test:watch": "vitest --watch",
-    "prepublishOnly": "pnpm run build",
-    "codegen": "cube-records-codegen"
+    "prepublishOnly": "pnpm run build"
   },
   "keywords": [
     "cubejs",
@@ -49,9 +45,7 @@
   ],
   "author": "Aliou Diallo <code@general-dexterity.com>",
   "license": "MIT",
-  "dependencies": {
-    "@general-dexterity/cube-records-codegen": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@biomejs/biome": "latest",
     "@testing-library/react": "^16.3.0",
