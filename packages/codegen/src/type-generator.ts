@@ -86,20 +86,36 @@ export class TypeGenerator {
       measures.map((measure) => {
         const propertyName = cubeMeasureToPropertyName(measure.name);
 
+        const properties: ts.PropertySignature[] = [
+          ts.factory.createPropertySignature(
+            undefined,
+            ts.factory.createIdentifier('type'),
+            undefined,
+            ts.factory.createKeywordTypeNode(
+              dimensionTypeToTsType(measure.type)
+            )
+          ),
+        ];
+
+        // Add __cubetype for tracking original cube type
+        if (measure.type) {
+          properties.push(
+            ts.factory.createPropertySignature(
+              undefined,
+              ts.factory.createIdentifier('__cubetype'),
+              ts.factory.createToken(ts.SyntaxKind.QuestionToken),
+              ts.factory.createLiteralTypeNode(
+                ts.factory.createStringLiteral(measure.type)
+              )
+            )
+          );
+        }
+
         return ts.factory.createPropertySignature(
           undefined,
           ts.factory.createIdentifier(propertyName),
           undefined,
-          ts.factory.createTypeLiteralNode([
-            ts.factory.createPropertySignature(
-              undefined,
-              ts.factory.createIdentifier('type'),
-              undefined,
-              ts.factory.createKeywordTypeNode(
-                dimensionTypeToTsType(measure.type)
-              )
-            ),
-          ])
+          ts.factory.createTypeLiteralNode(properties)
         );
       })
     );
@@ -111,20 +127,36 @@ export class TypeGenerator {
       dimensions.map((dimension) => {
         const propertyName = cubeMeasureToPropertyName(dimension.name);
 
+        const properties: ts.PropertySignature[] = [
+          ts.factory.createPropertySignature(
+            undefined,
+            ts.factory.createIdentifier('type'),
+            undefined,
+            ts.factory.createKeywordTypeNode(
+              dimensionTypeToTsType(dimension.type)
+            )
+          ),
+        ];
+
+        // Add __cubetype for tracking original cube type (especially important for 'time' dimensions)
+        if (dimension.type) {
+          properties.push(
+            ts.factory.createPropertySignature(
+              undefined,
+              ts.factory.createIdentifier('__cubetype'),
+              undefined, // Not optional for dimensions, as we need it for time filtering
+              ts.factory.createLiteralTypeNode(
+                ts.factory.createStringLiteral(dimension.type)
+              )
+            )
+          );
+        }
+
         return ts.factory.createPropertySignature(
           undefined,
           ts.factory.createIdentifier(propertyName),
           undefined,
-          ts.factory.createTypeLiteralNode([
-            ts.factory.createPropertySignature(
-              undefined,
-              ts.factory.createIdentifier('type'),
-              undefined,
-              ts.factory.createKeywordTypeNode(
-                dimensionTypeToTsType(dimension.type)
-              )
-            ),
-          ])
+          ts.factory.createTypeLiteralNode(properties)
         );
       })
     );

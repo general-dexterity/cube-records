@@ -9,6 +9,7 @@ This package wraps Cube.js React hooks to provide:
 - Simplified result data without cube name prefixes
 - Type-safe joins across cube models
 - Zero runtime overhead
+- Advanced utility types for type-safe data manipulation
 
 ## Installation
 
@@ -25,6 +26,76 @@ yarn add @general-dexterity/cube-records
 - `@cubejs-client/core` ^1.3.34
 - `@cubejs-client/react` ^1.3.34
 - `react` ^18.0.0 || ^19.0.0
+
+## Advanced Features
+
+### Time Dimension Filtering
+
+The generated types now include `__cubetype` metadata that enables filtering for time dimensions:
+
+```typescript
+import type { CubeRecordQueryTimeDimension } from '@general-dexterity/cube-records';
+
+// Get only time dimensions from a cube
+type OrderTimeDimensions = CubeRecordQueryTimeDimension<'orders'>;
+// Result: 'order_date' | 'created_at' | ...
+```
+
+### String Field Utilities
+
+Extract and work with string-typed fields for type-safe grouping operations:
+
+```typescript
+import type { 
+  StringFields, 
+  PickStringFields,
+  GroupByKey 
+} from '@general-dexterity/cube-records';
+
+// Get string field names from a query result
+type Row = CubeRecordQueryRow<'orders', ['count'], ['status', 'id']>;
+type StringKeys = StringFields<Row>; // 'status'
+
+// Use with groupBy functions
+function groupBy<T, K extends GroupByKey<T>>(
+  data: T[],
+  key: K
+): Partial<Record<T[K] extends string ? T[K] : never, T[]>> {
+  // Implementation
+}
+
+// Type-safe: only allows string fields
+const grouped = groupBy(results, 'status'); // ✓ Works
+const grouped = groupBy(results, 'id');     // ✗ Type error (id is number)
+```
+
+### Smart Measure Type Inference
+
+Automatically infers the correct type for measures:
+
+```typescript
+import type { CubeRecordQueryMeasureType } from '@general-dexterity/cube-records';
+
+// If all measures are numbers, returns number
+type OrderMeasureType = CubeRecordQueryMeasureType<'orders'>; // number
+
+// If measures have mixed types, returns union
+type MixedMeasureType = CubeRecordQueryMeasureType<'mixedCube'>; // number | string
+```
+
+### Number Field Utilities
+
+Similar utilities for number-typed fields:
+
+```typescript
+import type { 
+  NumberFields, 
+  PickNumberFields 
+} from '@general-dexterity/cube-records';
+
+// Extract numeric fields for calculations
+type NumericFields = PickNumberFields<Row>;
+```
 
 ## Development & Contributing
 

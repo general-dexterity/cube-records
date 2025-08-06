@@ -5,7 +5,16 @@ export type {
   CubeRecordName,
   CubeRecordQueryDimension,
   CubeRecordQueryMeasure,
+  CubeRecordQueryMeasureType,
   CubeRecordQueryRow,
+  CubeRecordQueryRowEnhanced,
+  CubeRecordQueryTimeDimension,
+  CubeRecordTimeDimension,
+  GroupByKey,
+  NumberFields,
+  PickNumberFields,
+  PickStringFields,
+  StringFields,
 } from './types';
 export type {
   CubeRecordQueryFilter,

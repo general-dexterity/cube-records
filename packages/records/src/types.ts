@@ -3,8 +3,8 @@
  */
 export interface CubeRecordDefinition {
   name: string;
-  measures: Record<string, { type: unknown }>;
-  dimensions: Record<string, { type: unknown }>;
+  measures: Record<string, { type: unknown; __cubetype?: string }>;
+  dimensions: Record<string, { type: unknown; __cubetype?: string }>;
   joins?: readonly string[];
   segments?: readonly string[];
 }
@@ -159,3 +159,119 @@ export type CubeRecordQueryRow<
   M extends CubeRecordQueryMeasure<N>[] = [],
   D extends CubeRecordQueryDimension<N>[] = [],
 > = ExtractCubeRecordMeasureTypes<N, M> & ExtractCubeRecordDimensionTypes<N, D>;
+
+/**
+ * Extracts only time dimensions from a cube record
+ */
+export type CubeRecordTimeDimension<N extends CubeRecordName> = {
+  [K in CubeRecordDimension<N>]: CubeRecordMap[N]['dimensions'][K] extends {
+    __cubetype: 'time';
+  }
+    ? K
+    : never;
+}[CubeRecordDimension<N>];
+
+/**
+ * Extracts only time dimensions from joined cube records
+ */
+type JoinedCubeRecordTimeDimension<T extends CubeRecordName> =
+  T extends CubeRecordName
+    ? CubeRecordMap[T]['joins'] extends infer J
+      ? J extends readonly string[]
+        ? J[number] extends infer JoinName
+          ? JoinName extends CubeRecordName
+            ? {
+                [K in keyof CubeRecordMap[JoinName]['dimensions']]: CubeRecordMap[JoinName]['dimensions'][K] extends {
+                  __cubetype: 'time';
+                }
+                  ? `${JoinName}.${K & string}`
+                  : never;
+              }[keyof CubeRecordMap[JoinName]['dimensions']]
+            : never
+          : never
+        : never
+      : never
+    : never;
+
+/**
+ * Type for time dimensions of a specific cube record, including joined time dimensions
+ */
+export type CubeRecordQueryTimeDimension<N extends CubeRecordName> =
+  | CubeRecordTimeDimension<N>
+  | JoinedCubeRecordTimeDimension<N>;
+
+/**
+ * Utility type to extract only string-typed fields from a type
+ */
+export type StringFields<T> = {
+  [K in keyof T]: T[K] extends string ? K : never;
+}[keyof T];
+
+/**
+ * Utility type to pick only string-typed fields from a type
+ */
+export type PickStringFields<T> = Pick<T, StringFields<T>>;
+
+/**
+ * Utility type to extract only number-typed fields from a type
+ */
+export type NumberFields<T> = {
+  [K in keyof T]: T[K] extends number ? K : never;
+}[keyof T];
+
+/**
+ * Utility type to pick only number-typed fields from a type
+ */
+export type PickNumberFields<T> = Pick<T, NumberFields<T>>;
+
+/**
+ * Helper type to check if all values in a union are numbers
+ */
+type AllNumber<T> = T extends number ? true : false;
+
+/**
+ * Helper type to check if all values in a union are strings
+ */
+type AllString<T> = T extends string ? true : false;
+
+/**
+ * Helper to get all measure types for a cube
+ */
+type GetAllMeasureTypes<N extends CubeRecordName> = {
+  [K in keyof CubeRecordMap[N]['measures']]: CubeRecordMap[N]['measures'][K] extends {
+    type: infer T;
+  }
+    ? T
+    : never;
+}[keyof CubeRecordMap[N]['measures']];
+
+/**
+ * Smart measure type that infers the type based on all measures
+ * If all measures are numbers, returns number
+ * If all measures are strings, returns string
+ * Otherwise returns the union of all measure types
+ */
+export type CubeRecordQueryMeasureType<N extends CubeRecordName> =
+  GetAllMeasureTypes<N> extends infer Types
+    ? [Types] extends [never]
+      ? unknown
+      : AllNumber<Types> extends true
+        ? number
+        : AllString<Types> extends true
+          ? string
+          : Types
+    : unknown;
+
+/**
+ * Enhanced query row type with better inference for measures
+ */
+export type CubeRecordQueryRowEnhanced<
+  N extends CubeRecordName,
+  M extends CubeRecordQueryMeasure<N>[] = [],
+  D extends CubeRecordQueryDimension<N>[] = [],
+> = CubeRecordQueryRow<N, M, D>;
+
+/**
+ * Type-safe groupBy helper - extracts keys that are strings
+ */
+export type GroupByKey<T> = StringFields<T>;
