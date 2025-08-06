@@ -263,13 +263,30 @@ export type CubeRecordQueryMeasureType<N extends CubeRecordName> =
     : unknown;
 
 /**
+ * Helper to extract measure types when all are the same type
+ */
+type SmartMeasureTypes<
+  N extends CubeRecordName,
+  M extends CubeRecordQueryMeasure<N>[],
+> = M extends []
+  ? Record<string, never>
+  : CubeRecordQueryMeasureType<N> extends number
+    ? { [K in M[number]]: number }
+    : CubeRecordQueryMeasureType<N> extends string
+      ? { [K in M[number]]: string }
+      : ExtractCubeRecordMeasureTypes<N, M>;
+
+/**
  * Enhanced query row type with better inference for measures
+ * When all measures in a cube are numbers, measure fields will be typed as number
+ * When all measures are strings, they'll be typed as string
+ * Otherwise falls back to specific types per measure
  */
 export type CubeRecordQueryRowEnhanced<
   N extends CubeRecordName,
   M extends CubeRecordQueryMeasure<N>[] = [],
   D extends CubeRecordQueryDimension<N>[] = [],
-> = CubeRecordQueryRow<N, M, D>;
+> = SmartMeasureTypes<N, M> & ExtractCubeRecordDimensionTypes<N, D>;
 
 /**
  * Type-safe groupBy helper - extracts keys that are strings

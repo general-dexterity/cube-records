@@ -110,13 +110,25 @@ const grouped = groupBy(results, 'id');     // ✗ Type error (id is number)
 Automatically infers the correct type for measures:
 
 ```typescript
-import type { CubeRecordQueryMeasureType } from '@general-dexterity/cube-records';
+import type { 
+  CubeRecordQueryMeasureType,
+  CubeRecordQueryRowEnhanced 
+} from '@general-dexterity/cube-records';
 
 // If all measures are numbers, returns number
 type OrderMeasureType = CubeRecordQueryMeasureType<'orders'>; // number
 
 // If measures have mixed types, returns union
 type MixedMeasureType = CubeRecordQueryMeasureType<'mixedCube'>; // number | string
+
+// Enhanced row type uses smart inference for better DX
+type EnhancedRow = CubeRecordQueryRowEnhanced<
+  'orders',
+  ['count', 'total'],
+  ['status']
+>;
+// When all measures are numbers, they're all typed as number
+// This provides better type inference for generic functions
 ```
 
 ### Number Field Utilities
