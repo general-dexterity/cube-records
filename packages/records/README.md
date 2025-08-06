@@ -29,16 +29,52 @@ yarn add @general-dexterity/cube-records
 
 ## Advanced Features
 
+### Type-Safe Order Parameter
+
+The `order` parameter in queries now only accepts valid measures and dimensions from your cube:
+
+```typescript
+import { useCubeRecordQuery } from '@general-dexterity/cube-records';
+
+const { data } = useCubeRecordQuery({
+  model: 'orders',
+  query: {
+    measures: ['count', 'total'],
+    dimensions: ['status', 'created_at'],
+    order: {
+      count: 'desc',        // ✓ Valid measure
+      status: 'asc',        // ✓ Valid dimension
+      created_at: 'desc',   // ✓ Valid dimension
+      // invalid: 'asc',    // ✗ Type error - field doesn't exist
+    },
+  },
+});
+```
+
 ### Time Dimension Filtering
 
-The generated types now include `__cubetype` metadata that enables filtering for time dimensions:
+The generated types now include `__cubetype` metadata that enables filtering for time dimensions and the `timeDimensions` parameter now only accepts dimensions with time type:
 
 ```typescript
 import type { CubeRecordQueryTimeDimension } from '@general-dexterity/cube-records';
+import { useCubeRecordQuery } from '@general-dexterity/cube-records';
 
 // Get only time dimensions from a cube
 type OrderTimeDimensions = CubeRecordQueryTimeDimension<'orders'>;
 // Result: 'order_date' | 'created_at' | ...
+
+// Use in queries - only time dimensions are allowed
+const { data } = useCubeRecordQuery({
+  model: 'orders',
+  query: {
+    timeDimensions: [{
+      dimension: 'order_date',    // ✓ Valid - time dimension
+      // dimension: 'status',      // ✗ Type error - not a time dimension
+      granularity: 'day',
+      dateRange: 'last 7 days',
+    }],
+  },
+});
 ```
 
 ### String Field Utilities

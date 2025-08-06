@@ -17,9 +17,11 @@ export type {
   StringFields,
 } from './types';
 export type {
+  CubeRecordOrder,
   CubeRecordQueryFilter,
   CubeRecordQueryParams,
   CubeRecordQueryResult,
+  CubeRecordTimeDimensionParam,
   UseCubeRecordQueryProps,
 } from './use-cube-record-query';
 export { useCubeRecordQuery } from './use-cube-record-query';

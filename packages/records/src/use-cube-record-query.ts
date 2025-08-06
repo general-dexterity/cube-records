@@ -10,10 +10,12 @@ import {
   useCubeQuery as useCoreCubeQuery,
 } from '@cubejs-client/react';
 import type {
+  CubeRecordAttribute,
   CubeRecordName,
   CubeRecordQueryDimension,
   CubeRecordQueryMeasure,
   CubeRecordQueryRow,
+  CubeRecordQueryTimeDimension,
 } from './types';
 
 /**
@@ -32,6 +34,23 @@ export type CubeRecordQueryFilter<N extends CubeRecordName> =
     };
 
 /**
+ * Order type that accepts any valid attribute (measure or dimension) from the cube
+ */
+export type CubeRecordOrder<N extends CubeRecordName> = Partial<
+  Record<CubeRecordAttribute<N>, 'asc' | 'desc'>
+>;
+
+/**
+ * Type-safe time dimension that only accepts dimensions with time type
+ */
+export type CubeRecordTimeDimensionParam<N extends CubeRecordName> = Omit<
+  TimeDimension,
+  'dimension'
+> & {
+  dimension: CubeRecordQueryTimeDimension<N>;
+};
+
+/**
  * Query parameters for the useCubeRecordQuery hook
  */
 export interface CubeRecordQueryParams<N extends CubeRecordName> {
@@ -39,14 +58,10 @@ export interface CubeRecordQueryParams<N extends CubeRecordName> {
   dimensions?: CubeRecordQueryDimension<N>[];
   filters?: CubeRecordQueryFilter<N>[];
   segments?: string[];
-  timeDimensions?: Array<
-    TimeDimension & {
-      dimension: CubeRecordQueryDimension<N>;
-    }
-  >;
+  timeDimensions?: CubeRecordTimeDimensionParam<N>[];
   limit?: number;
   offset?: number;
-  order?: Record<string, 'asc' | 'desc'>;
+  order?: CubeRecordOrder<N>;
   timezone?: string;
   renewQuery?: boolean;
   ungrouped?: boolean;
@@ -176,13 +191,13 @@ export function useCubeRecordQuery<
     limit: query.limit,
     offset: query.offset,
     order: query.order
-      ? Object.entries(query.order).reduce(
+      ? Object.entries(query.order).reduce<Record<string, 'asc' | 'desc'>>(
           (acc, [key, direction]) => {
             const member = key.includes('.') ? key : `${cubeRecordName}.${key}`;
-            acc[member] = direction;
+            acc[member] = direction as 'asc' | 'desc';
             return acc;
           },
-          {} as Record<string, 'asc' | 'desc'>
+          {}
         )
       : undefined,
     timezone: query.timezone,
