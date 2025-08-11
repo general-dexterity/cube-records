@@ -1,6 +1,6 @@
 {
   "name": "@general-dexterity/cube-records",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Opinionated wrapper around @cubejs-client/react",
   "type": "module",
   "engines": {
