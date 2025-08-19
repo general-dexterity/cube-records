@@ -19,6 +19,18 @@ import type {
 } from './types';
 
 /**
+ * Remap keys by adding the model prefix to non-joined attributes
+ */
+// TODO: Delete this when we handle non stripping in the `CubeRecordQueryRow` type.
+type RemapKeysWithModel<N extends CubeRecordName, T> = {
+  [K in keyof T as K extends string
+    ? K extends `${string}.${string}`
+      ? K
+      : `${N}.${K}`
+    : K]: T[K];
+};
+
+/**
  * Filter definition for cube record queries
  */
 export type CubeRecordQueryFilter<N extends CubeRecordName> =
@@ -75,12 +87,17 @@ export interface CubeRecordQueryResult<
   N extends CubeRecordName,
   M extends CubeRecordQueryMeasure<N>[] = [],
   D extends CubeRecordQueryDimension<N>[] = [],
+  Strip extends boolean = true,
 > {
   isLoading: boolean;
   error?: Error;
   resultSet?: ResultSet;
   refetch: () => Promise<void>;
-  data: CubeRecordQueryRow<N, M, D>[];
+  // TODO: Use a single type that handles both stripped and non-stripped cases.
+  data: (Strip extends true
+    ? CubeRecordQueryRow<N, M, D>
+    : RemapKeysWithModel<N, CubeRecordQueryRow<N, M, D>>
+  )[];
   totalResultCount: number | null;
 }
 
@@ -116,13 +133,19 @@ const formatFilters = <N extends CubeRecordName>(
  */
 const formatResultSet = <_N extends CubeRecordName>(
   resultSet: ResultSet | null | undefined,
-  cubeRecordName: string
+  cubeRecordName: string,
+  strip: boolean
 ): Record<string, unknown>[] => {
   if (!resultSet) {
     return [];
   }
 
   const data = resultSet.tablePivot();
+
+  if (!strip) {
+    // Keep as-is
+    return data as unknown as Record<string, unknown>[];
+  }
 
   return data.map((row) => {
     const formattedRow: Record<string, unknown> = {};
@@ -141,6 +164,11 @@ const formatResultSet = <_N extends CubeRecordName>(
   });
 };
 
+type UseCubeRecordFormattingOptions = {
+  stripModelPrefix?: boolean;
+};
+type UseCubeRecordOptions = UseCoreCubeQueryOptions & UseCubeRecordFormattingOptions;
+
 export type UseCubeRecordQueryProps<
   N extends CubeRecordName,
   M extends CubeRecordQueryMeasure<N>[] = [],
@@ -151,7 +179,7 @@ export type UseCubeRecordQueryProps<
     measures?: M;
     dimensions?: D;
   };
-  options?: UseCoreCubeQueryOptions;
+  options?: UseCubeRecordOptions;
 };
 
 /**
@@ -161,6 +189,23 @@ export type UseCubeRecordQueryProps<
  * @param query - Query parameters including measures, dimensions, filters, etc.
  * @returns Strongly typed query result with data, loading state, and error handling
  */
+// Overloads for better type narrowing based on options.stripModelPrefix
+export function useCubeRecordQuery<
+  N extends CubeRecordName,
+  M extends CubeRecordQueryMeasure<N>[] = [],
+  D extends CubeRecordQueryDimension<N>[] = [],
+>(props: UseCubeRecordQueryProps<N, M, D> & {
+  options?: UseCubeRecordOptions & { stripModelPrefix?: true | undefined };
+}): CubeRecordQueryResult<N, M, D, true>;
+
+export function useCubeRecordQuery<
+  N extends CubeRecordName,
+  M extends CubeRecordQueryMeasure<N>[] = [],
+  D extends CubeRecordQueryDimension<N>[] = [],
+>(props: UseCubeRecordQueryProps<N, M, D> & {
+  options: UseCubeRecordOptions & { stripModelPrefix: false };
+}): CubeRecordQueryResult<N, M, D, false>;
+
 export function useCubeRecordQuery<
   N extends CubeRecordName,
   M extends CubeRecordQueryMeasure<N>[] = [],
@@ -169,7 +214,7 @@ export function useCubeRecordQuery<
   model: cubeRecordName,
   query,
   options,
-}: UseCubeRecordQueryProps<N, M, D>): CubeRecordQueryResult<N, M, D> {
+}: UseCubeRecordQueryProps<N, M, D> & { options?: UseCubeRecordOptions }): CubeRecordQueryResult<N, M, D, boolean> {
   // Build the Cube.js query
   const cubeQuery: CoreCubeQuery = {
     measures: query.measures?.map((measure) =>
@@ -206,25 +251,33 @@ export function useCubeRecordQuery<
     total: query.total,
   };
 
+  const hasStripFlag =
+    options != null && Object.hasOwn(options as object, 'stripModelPrefix');
+  const { stripModelPrefix = true, ...coreOptions } = options ?? {};
+  const forwardedOptions = hasStripFlag ? coreOptions : options;
+
   // Use the core Cube.js query hook
   const { resultSet, isLoading, error, refetch } = useCoreCubeQuery(
     cubeQuery,
-    options
+    forwardedOptions
   );
 
   // Format the result data
-  const formattedData = formatResultSet(resultSet, cubeRecordName);
+  const formattedData = formatResultSet(resultSet, cubeRecordName, stripModelPrefix);
   const totalResultCount = resultSet?.totalRows() ?? null;
 
-  // Cast to strongly typed result
-  const data = formattedData as unknown as CubeRecordQueryRow<N, M, D>[];
+  // Cast to strongly typed result based on strip flag (overloads drive the API type)
+  const data = formattedData as unknown as (
+    | CubeRecordQueryRow<N, M, D>[]
+    | RemapKeysWithModel<N, CubeRecordQueryRow<N, M, D>>[]
+  );
 
   return {
     isLoading,
     error: error as Error | undefined,
     resultSet: resultSet as ResultSet | undefined,
     refetch,
-    data,
+    data: data,
     totalResultCount,
   };
 }

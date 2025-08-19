@@ -230,6 +230,51 @@ describe('useCubeRecordQuery', () => {
       assert(!('users.count' in result.current.data[0]));
     });
 
+    it('keeps base model prefix when options.stripModelPrefix is false', () => {
+      const mockData = [
+        {
+          'users.id': '1',
+          'users.name': 'John Doe',
+          'users.count': 10,
+        },
+      ];
+
+      const mockResultSet = createMock<ResultSet>({
+        tablePivot: vi.fn().mockReturnValue(mockData),
+        totalRows: vi.fn().mockReturnValue(1),
+      });
+
+      (mockUseCubeQuery as Mock).mockReturnValue({
+        resultSet: mockResultSet,
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      });
+
+      const { result } = renderHook(() =>
+        useCubeRecordQuery({
+          model: 'users',
+          query: {
+            measures: ['count'],
+            dimensions: ['id', 'name'],
+          },
+          options: {
+            stripModelPrefix: false,
+          },
+        })
+      );
+
+      assert(result.current.data.length === 1);
+      // Base model fields should be kept with prefixes
+      assert(result.current.data[0]['users.id'] === '1');
+      assert(result.current.data[0]['users.name'] === 'John Doe');
+      assert(result.current.data[0]['users.count'] === 10);
+      // And the stripped versions should not exist
+      assert(!('id' in result.current.data[0]));
+      assert(!('name' in result.current.data[0]));
+      assert(!('count' in result.current.data[0]));
+    });
+
     it('preserves joined cube prefixes in results', () => {
       const mockData = [
         {
@@ -412,6 +457,37 @@ describe('useCubeRecordQuery', () => {
       );
 
       assert((mockUseCubeQuery as Mock).mock.calls[0][1] === testOptions);
+    });
+
+    it('does not forward stripModelPrefix flag to the core hook', () => {
+      const mockResultSet = createMock<ResultSet>({
+        tablePivot: vi.fn().mockReturnValue([]),
+        totalRows: vi.fn().mockReturnValue(0),
+      });
+
+      (mockUseCubeQuery as Mock).mockReturnValue({
+        resultSet: mockResultSet,
+        isLoading: false,
+        error: null,
+        refetch: vi.fn(),
+      });
+
+      const testOptions = {
+        stripModelPrefix: false,
+        resetResultSetOnChange: true,
+      } as const;
+
+      renderHook(() =>
+        useCubeRecordQuery({
+          model: 'users',
+          query: {},
+          options: testOptions,
+        })
+      );
+
+      const forwarded = (mockUseCubeQuery as Mock).mock.calls[0][1];
+      assert(forwarded.resetResultSetOnChange === true);
+      assert(!('stripModelPrefix' in forwarded));
     });
   });
 

@@ -1,5 +1,7 @@
-import { assert, describe, it, vi } from 'vitest';
+import { assert, describe, it, vi, expectTypeOf } from 'vitest';
 import type { CubeRecordDefinition } from '../src/types';
+import type { CubeRecordQueryResult } from '../src/use-cube-record-query';
+import type { CubeRecordQueryRow, RemapKeysWithModel } from '../src/types';
 
 // Type predicate functions for testing
 function isString(value: unknown): value is string {
@@ -68,6 +70,17 @@ describe('Type Safety Tests', () => {
   });
 
   describe('Type system mechanics', () => {
+    it('validates CubeRecordQueryResult strip flag typing', () => {
+      type Row = CubeRecordQueryRow<'users', ['count'], ['id', 'name']>;
+      type PrefixedRow = RemapKeysWithModel<'users', Row>;
+
+      type Stripped = CubeRecordQueryResult<'users', ['count'], ['id', 'name'], true>['data'][number];
+      type Kept = CubeRecordQueryResult<'users', ['count'], ['id', 'name'], false>['data'][number];
+
+      expectTypeOf<Stripped>().toEqualTypeOf<Row>();
+      expectTypeOf<Kept>().toEqualTypeOf<PrefixedRow>();
+    });
+
     it('demonstrates type extraction patterns', () => {
       // Test the pattern of type extraction that the system uses
       // This is a meta-test to ensure the type system works as expected
