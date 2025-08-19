@@ -164,10 +164,11 @@ const formatResultSet = <_N extends CubeRecordName>(
   });
 };
 
-type UseCubeRecordFormattingOptions = {
+export type UseCubeRecordFormattingOptions = {
   stripModelPrefix?: boolean;
 };
-type UseCubeRecordOptions = UseCoreCubeQueryOptions & UseCubeRecordFormattingOptions;
+
+export type UseCubeRecordOptions = UseCoreCubeQueryOptions & UseCubeRecordFormattingOptions;
 
 export type UseCubeRecordQueryProps<
   N extends CubeRecordName,

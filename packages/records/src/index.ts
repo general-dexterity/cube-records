@@ -23,5 +23,6 @@ export type {
   CubeRecordQueryResult,
   CubeRecordTimeDimensionParam,
   UseCubeRecordQueryProps,
+  UseCubeRecordOptions,
 } from './use-cube-record-query';
 export { useCubeRecordQuery } from './use-cube-record-query';
