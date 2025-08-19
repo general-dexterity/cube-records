@@ -1,13 +1,13 @@
-import { describe, it, expectTypeOf } from 'vitest';
+import { describe, expectTypeOf, it } from 'vitest';
 import type {
+  CubeRecordQueryMeasureType,
   CubeRecordQueryRow,
   CubeRecordQueryTimeDimension,
-  StringFields,
-  PickStringFields,
+  GroupByKey,
   NumberFields,
   PickNumberFields,
-  CubeRecordQueryMeasureType,
-  GroupByKey,
+  PickStringFields,
+  StringFields,
 } from '../src/types';
 
 // Mock CubeRecordMap for testing
@@ -117,7 +117,9 @@ describe('Utility Types', () => {
       };
 
       type NumberFieldNames = NumberFields<TestType>;
-      expectTypeOf<NumberFieldNames>().toEqualTypeOf<'id' | 'count' | 'price'>();
+      expectTypeOf<NumberFieldNames>().toEqualTypeOf<
+        'id' | 'count' | 'price'
+      >();
     });
 
     it('picks only number fields from a type', () => {
@@ -183,7 +185,7 @@ describe('Utility Types', () => {
 
       // This should cause a type error (id is number, not string)
       // @ts-expect-error - id is not a string field
-      const byId = groupBy(mockData, 'id');
+      const _byId = groupBy(mockData, 'id');
 
       expectTypeOf(byName).toMatchTypeOf<Partial<Record<string, Row[]>>>();
       expectTypeOf(byStatus).toMatchTypeOf<Partial<Record<string, Row[]>>>();

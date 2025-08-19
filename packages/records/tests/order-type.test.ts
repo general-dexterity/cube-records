@@ -1,4 +1,4 @@
-import { describe, it, expectTypeOf } from 'vitest';
+import { describe, expectTypeOf, it } from 'vitest';
 import type {
   CubeRecordOrder,
   CubeRecordQueryParams,
@@ -37,7 +37,7 @@ declare module '../src/types' {
 describe('Order Type', () => {
   it('accepts valid measures and dimensions from the cube', () => {
     type OrderType = CubeRecordOrder<'orderTestCube'>;
-    
+
     // These should all be valid
     const validOrder: OrderType = {
       count: 'asc',
@@ -53,7 +53,7 @@ describe('Order Type', () => {
 
   it('accepts joined measures and dimensions', () => {
     type OrderType = CubeRecordOrder<'orderTestCube'>;
-    
+
     const orderWithJoins: OrderType = {
       count: 'asc',
       'relatedCube.amount': 'desc',
@@ -66,9 +66,9 @@ describe('Order Type', () => {
 
   it('only accepts asc or desc as values', () => {
     type OrderType = CubeRecordOrder<'orderTestCube'>;
-    
+
     // @ts-expect-error - invalid sort direction
-    const invalidOrder: OrderType = {
+    const _invalidOrder: OrderType = {
       count: 'invalid',
     };
 
@@ -83,7 +83,7 @@ describe('Order Type', () => {
 
   it('works with CubeRecordQueryParams', () => {
     type QueryParams = CubeRecordQueryParams<'orderTestCube'>;
-    
+
     const query: QueryParams = {
       measures: ['count', 'total'],
       dimensions: ['name', 'status'],
@@ -100,8 +100,8 @@ describe('Order Type', () => {
 
   it('prevents ordering by non-existent fields', () => {
     type OrderType = CubeRecordOrder<'orderTestCube'>;
-    
-    const order: OrderType = {
+
+    const _order: OrderType = {
       // @ts-expect-error - non_existent_field doesn't exist
       non_existent_field: 'asc',
       // Valid field
@@ -117,7 +117,7 @@ describe('Order Type', () => {
 
   it('is optional in query params', () => {
     type QueryParams = CubeRecordQueryParams<'orderTestCube'>;
-    
+
     // Query without order is valid
     const queryWithoutOrder: QueryParams = {
       measures: ['count'],

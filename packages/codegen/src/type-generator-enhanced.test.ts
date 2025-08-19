@@ -1,7 +1,7 @@
-import { describe, it, expect } from 'vitest';
 import ts from 'typescript';
-import { TypeGenerator } from './type-generator';
+import { describe, expect, it } from 'vitest';
 import type { CubeDefinitionWithRelations } from './cube';
+import { TypeGenerator } from './type-generator';
 
 describe('TypeGenerator - Enhanced Features', () => {
   const generator = new TypeGenerator();
@@ -76,7 +76,9 @@ describe('TypeGenerator - Enhanced Features', () => {
     );
 
     const code = statements
-      .map((statement) => printer.printNode(ts.EmitHint.Unspecified, statement, sourceFile))
+      .map((statement) =>
+        printer.printNode(ts.EmitHint.Unspecified, statement, sourceFile)
+      )
       .join('\n');
 
     // Check that __cubetype is generated for dimensions
@@ -142,7 +144,9 @@ describe('TypeGenerator - Enhanced Features', () => {
     );
 
     const code = statements
-      .map((statement) => printer.printNode(ts.EmitHint.Unspecified, statement, sourceFile))
+      .map((statement) =>
+        printer.printNode(ts.EmitHint.Unspecified, statement, sourceFile)
+      )
       .join('\n');
 
     // Check that __cubetype is generated for measures
@@ -218,7 +222,9 @@ describe('TypeGenerator - Enhanced Features', () => {
     );
 
     const code = statements
-      .map((statement) => printer.printNode(ts.EmitHint.Unspecified, statement, sourceFile))
+      .map((statement) =>
+        printer.printNode(ts.EmitHint.Unspecified, statement, sourceFile)
+      )
       .join('\n');
 
     // Verify all types are handled
