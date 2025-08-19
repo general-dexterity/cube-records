@@ -1,8 +1,8 @@
-import { describe, it, expectTypeOf } from 'vitest';
+import { describe, expectTypeOf, it } from 'vitest';
 import type {
+  CubeRecordQueryMeasureType,
   CubeRecordQueryRow,
   CubeRecordQueryRowEnhanced,
-  CubeRecordQueryMeasureType,
 } from '../src/types';
 
 // Mock CubeRecordMap for testing
@@ -150,8 +150,8 @@ describe('Enhanced Row Type with Smart Measure Inference', () => {
     >;
 
     // They should be assignable to each other
-    const standard: StandardRow = { count: 42, name: 'test' };
-    const enhanced: EnhancedRow = { count: 42, name: 'test' };
+    const _standard: StandardRow = { count: 42, name: 'test' };
+    const _enhanced: EnhancedRow = { count: 42, name: 'test' };
 
     expectTypeOf<StandardRow>().toMatchTypeOf<EnhancedRow>();
     expectTypeOf<EnhancedRow>().toMatchTypeOf<StandardRow>();
