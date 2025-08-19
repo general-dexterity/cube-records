@@ -1,0 +1,26 @@
+id,name,description,category,category_id,price,cost,sku,stock_quantity,created_at,is_active
+1,Wireless Bluetooth Headphones,Premium noise-cancelling over-ear headphones with 30-hour battery life,Electronics,8,199.99,89.5,ELEC-WBH-001,150,2023-01-01,true
+2,Smart Watch Pro,Fitness tracker with heart rate monitor and GPS,Electronics,7,349.99,145.0,ELEC-SWP-002,75,2023-01-15,true
+3,Organic Cotton T-Shirt,100% organic cotton crew neck t-shirt,Clothing,10,29.99,12.0,CLTH-OCT-003,500,2023-02-01,true
+4,Running Shoes Elite,Professional running shoes with advanced cushioning,Sports,15,149.99,65.0,SPRT-RSE-004,200,2023-02-10,true
+5,Ceramic Plant Pot Set,Set of 3 decorative ceramic plant pots,Home & Garden,14,49.99,18.5,HOME-CPP-005,300,2023-02-20,true
+6,Python Programming Guide,Comprehensive guide to Python programming,Books,20,39.99,15.0,BOOK-PPG-006,400,2023-03-01,true
+7,Yoga Mat Premium,Extra thick non-slip yoga mat,Sports,15,59.99,22.0,SPRT-YMP-007,250,2023-03-15,true
+8,LED Desk Lamp,Adjustable LED desk lamp with USB charging port,Electronics,1,79.99,32.0,ELEC-LDL-008,180,2023-04-01,true
+9,Denim Jacket Classic,Vintage style denim jacket,Clothing,9,89.99,38.0,CLTH-DJC-009,120,2023-04-10,true
+10,Stainless Steel Water Bottle,32oz insulated water bottle,Sports,16,34.99,14.0,SPRT-SWB-010,600,2023-04-20,true
+11,Bamboo Cutting Board,Premium bamboo cutting board set,Home & Garden,12,44.99,16.5,HOME-BCB-011,220,2023-05-01,true
+12,JavaScript Mastery,Advanced JavaScript techniques and patterns,Books,20,44.99,17.0,BOOK-JSM-012,350,2023-05-15,true
+13,Wireless Mouse,Ergonomic wireless mouse with precision tracking,Electronics,6,49.99,19.0,ELEC-WRM-013,400,2023-06-01,true
+14,Wool Sweater,100% merino wool sweater,Clothing,10,119.99,52.0,CLTH-WSW-014,80,2023-06-10,true
+15,Resistance Band Set,Complete resistance band training set,Sports,15,39.99,15.5,SPRT-RBS-015,300,2023-06-20,true
+16,Scented Candle Collection,Set of 4 luxury scented candles,Home & Garden,3,69.99,26.0,HOME-SCC-016,150,2023-07-01,true
+17,Data Science Handbook,Practical guide to data science and machine learning,Books,19,54.99,21.0,BOOK-DSH-017,200,2023-07-15,true
+18,Portable Power Bank,20000mAh fast charging power bank,Electronics,7,89.99,35.0,ELEC-PPB-018,250,2023-08-01,true
+19,Leather Wallet,Genuine leather bifold wallet,Clothing,11,79.99,32.0,CLTH-LWL-019,180,2023-08-10,true
+20,Tennis Racket Pro,Professional grade tennis racket,Sports,17,199.99,85.0,SPRT-TRP-020,60,2023-08-20,true
+21,Kitchen Knife Set,Professional 6-piece kitchen knife set,Home & Garden,12,149.99,58.0,HOME-KKS-021,100,2023-09-01,false
+22,Web Development Course,Complete web development bootcamp book,Books,20,49.99,19.0,BOOK-WDC-022,280,2023-09-15,true
+23,Tablet Stand,Adjustable aluminum tablet stand,Electronics,1,39.99,15.0,ELEC-TST-023,350,2023-10-01,true
+24,Winter Boots,Waterproof insulated winter boots,Clothing,9,139.99,58.0,CLTH-WBT-024,90,2023-10-10,true
+25,Foam Roller,High-density foam roller for muscle recovery,Sports,15,29.99,11.0,SPRT-FMR-025,400,2023-10-20,true

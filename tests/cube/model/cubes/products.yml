@@ -1,0 +1,60 @@
+cubes:
+  - name: products
+    sql_table: main.products
+    data_source: default
+
+    joins:
+      - name: categories
+        sql: "{CUBE}.category_id = {categories.id}"
+        relationship: many_to_one
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+      - name: category
+        sql: category
+        type: string
+
+      - name: description
+        sql: description
+        type: string
+
+      - name: is_active
+        sql: is_active
+        type: boolean
+
+      - name: name
+        sql: name
+        type: string
+
+      - name: sku
+        sql: sku
+        type: string
+
+      - name: created_at
+        sql: created_at
+        type: time
+
+    measures:
+      - name: count
+        type: count
+
+      - name: cost
+        sql: cost
+        type: sum
+
+      - name: price
+        sql: price
+        type: sum
+
+      - name: stock_quantity
+        sql: stock_quantity
+        type: sum
+
+    pre_aggregations:
+      # Pre-aggregation definitions go here.
+      # Learn more in the documentation: https://cube.dev/docs/caching/pre-aggregations/getting-started
+

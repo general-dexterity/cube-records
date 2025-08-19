@@ -1,0 +1,23 @@
+services:
+  # cubestore:
+  #   image: cubejs/cubestore:latest
+  #   environment:
+  #     - CUBESTORE_REMOTE_DIR=/cube/data
+  #   volumes:
+  #     - .cubestore:/cube/data
+  cube:
+    image: cubejs/cube:latest
+    ports:
+      - 4000:4000
+    environment:
+      - CUBEJS_DEV_MODE=true
+      - CUBEJS_DB_TYPE=duckdb
+      - CUBEJS_CUBESTORE_HOST=localhost
+      - CUBEJS_DB_DUCKDB_DATABASE_PATH=/data/data.duckdb
+    # depends_on:
+    #   - cubestore
+    # links:
+    #   - cubestore
+    volumes:
+      - ./cube/model:/cube/conf/model
+      - ./data/data.duckdb:/data/data.duckdb

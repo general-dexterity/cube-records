@@ -1,0 +1,21 @@
+id,product_id,user_id,rating_score,comment,review_date
+1,1,3,5,Excellent sound quality and comfortable to wear for long periods. Best headphones I've owned!,2024-02-01
+2,2,1,4,Great smartwatch with lots of features. Battery life could be better.,2024-02-05
+3,3,5,5,Super soft and fits perfectly. Washes well too.,2024-02-10
+4,4,2,5,These shoes are amazing for running. Very comfortable and great support.,2024-02-15
+5,5,9,4,Beautiful pots but one arrived with a small chip. Still happy with purchase.,2024-02-20
+6,1,7,3,Good headphones but the price is a bit high for what you get.,2024-02-25
+7,7,11,5,Perfect yoga mat! Non-slip surface is excellent.,2024-03-01
+8,8,13,5,Love this lamp. The USB charging port is so convenient.,2024-03-05
+9,10,4,4,Keeps drinks cold all day. Would recommend.,2024-03-10
+10,14,8,5,Warmest sweater I own. Quality is outstanding.,2024-03-15
+11,1,10,4,Great sound but wish they folded smaller for travel.,2024-03-20
+12,3,12,5,Bought 5 of these. Great quality for the price.,2024-03-25
+13,6,15,5,Excellent book for beginners. Clear explanations.,2024-03-28
+14,15,1,4,Good resistance bands but the handles could be more comfortable.,2024-04-01
+15,20,7,5,Best tennis racket I've used. Perfect balance.,2024-04-05
+16,2,14,2,Too many connectivity issues. Disappointed.,2024-04-08
+17,11,3,5,Beautiful cutting board and very durable.,2024-04-10
+18,17,9,5,Comprehensive coverage of data science topics. Worth every penny.,2024-04-12
+19,23,5,4,Sturdy stand but a bit wobbly at full height.,2024-04-15
+20,25,11,5,Excellent for recovery. Highly recommend!,2024-04-18

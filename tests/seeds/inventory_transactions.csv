@@ -1,0 +1,26 @@
+id,product_id,transaction_type,quantity,transaction_date,notes
+1,1,restock,200,2023-12-15,Initial inventory
+2,2,restock,100,2023-12-15,Initial inventory
+3,3,restock,600,2023-12-15,Initial inventory
+4,4,restock,250,2023-12-15,Initial inventory
+5,5,restock,400,2023-12-15,Initial inventory
+6,1,sale,-3,2024-01-15,Order fulfillment
+7,2,sale,-2,2024-01-16,Order fulfillment
+8,3,sale,-7,2024-01-18,Order fulfillment
+9,4,sale,-3,2024-01-20,Order fulfillment
+10,5,sale,-6,2024-02-01,Order fulfillment
+11,1,restock,50,2024-02-10,Low stock replenishment
+12,3,restock,100,2024-02-15,Regular restock
+13,7,restock,300,2024-02-20,New product arrival
+14,8,restock,200,2024-02-20,New product arrival
+15,1,sale,-2,2024-02-12,Order fulfillment
+16,4,sale,-2,2024-03-05,Order fulfillment
+17,7,sale,-6,2024-03-01,Order fulfillment
+18,8,sale,-4,2024-03-01,Order fulfillment
+19,1,damaged,-2,2024-03-10,Warehouse damage
+20,10,restock,50,2024-03-15,Low stock alert
+21,15,restock,100,2024-03-20,Spring season prep
+22,20,sale,-3,2024-03-18,Order fulfillment
+23,1,sale,-4,2024-03-18,Order fulfillment
+24,2,sale,-1,2024-03-25,Order fulfillment
+25,25,restock,150,2024-04-01,New product launch

@@ -1,0 +1,21 @@
+id,name,parent_category_id,description
+1,Electronics,,Electronic devices and accessories
+2,Clothing,,Apparel and fashion items
+3,Home & Garden,,Home improvement and gardening supplies
+4,Sports,,Sports equipment and athletic gear
+5,Books,,Literature and educational materials
+6,Computers,1,Desktop and laptop computers
+7,Mobile Devices,1,Smartphones and tablets
+8,Audio,1,Headphones and speakers
+9,Men's Clothing,2,Men's apparel
+10,Women's Clothing,2,Women's apparel
+11,Accessories,2,Bags wallets and accessories
+12,Kitchen,3,Kitchen appliances and utensils
+13,Furniture,3,Home furniture
+14,Garden Tools,3,Gardening equipment
+15,Fitness,4,Exercise equipment
+16,Outdoor Sports,4,Outdoor recreation gear
+17,Team Sports,4,Team sports equipment
+18,Fiction,5,Fiction books
+19,Non-Fiction,5,Non-fiction and educational books
+20,Technical,5,Programming and technical books

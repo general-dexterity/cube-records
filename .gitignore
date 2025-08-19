@@ -3,5 +3,6 @@ dist
 node_modules
 
 data.duckdb
+data.duckdb.backup
 
 *.tsbuildinfo

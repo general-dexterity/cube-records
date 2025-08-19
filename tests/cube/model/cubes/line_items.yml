@@ -1,0 +1,44 @@
+cubes:
+  - name: line_items
+    sql_table: main.line_items
+    data_source: default
+
+    joins:
+      - name: orders
+        sql: "{CUBE}.order_id = {orders.id}"
+        relationship: many_to_one
+
+      - name: products
+        sql: "{CUBE}.product_id = {products.id}"
+        relationship: many_to_one
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+      - name: is_on_sale
+        sql: is_on_sale
+        type: boolean
+
+    measures:
+      - name: count
+        type: count
+
+      - name: quantity
+        sql: quantity
+        type: sum
+
+      - name: sale_price
+        sql: sale_price
+        type: sum
+
+      - name: unit_price
+        sql: unit_price
+        type: sum
+
+    pre_aggregations:
+      # Pre-aggregation definitions go here.
+      # Learn more in the documentation: https://cube.dev/docs/caching/pre-aggregations/getting-started
+

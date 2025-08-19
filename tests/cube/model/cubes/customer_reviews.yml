@@ -1,0 +1,36 @@
+cubes:
+  - name: customer_reviews
+    sql_table: main.customer_reviews
+    data_source: default
+
+    joins:
+      - name: products
+        sql: "{CUBE}.product_id = {products.id}"
+        relationship: many_to_one
+
+      - name: users
+        sql: "{CUBE}.user_id = {users.id}"
+        relationship: many_to_one
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+      - name: comment
+        sql: comment
+        type: string
+
+      - name: review_date
+        sql: review_date
+        type: time
+
+    measures:
+      - name: count
+        type: count
+
+    pre_aggregations:
+      # Pre-aggregation definitions go here.
+      # Learn more in the documentation: https://cube.dev/docs/caching/pre-aggregations/getting-started
+

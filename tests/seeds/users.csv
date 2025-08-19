@@ -1,0 +1,16 @@
+id,first_name,last_name,company_id,email,created_at,is_active
+1,Emma,Johnson,101,emma.johnson@example.com,2023-01-15,true
+2,Liam,Smith,102,liam.smith@example.com,2023-02-20,true
+3,Sophia,Williams,101,sophia.williams@example.com,2023-03-10,true
+4,Noah,Brown,103,noah.brown@example.com,2023-04-05,true
+5,Olivia,Davis,102,olivia.davis@example.com,2023-05-12,true
+6,William,Miller,104,william.miller@example.com,2023-06-18,false
+7,Ava,Wilson,103,ava.wilson@example.com,2023-07-22,true
+8,James,Moore,105,james.moore@example.com,2023-08-30,true
+9,Isabella,Taylor,101,isabella.taylor@example.com,2023-09-14,true
+10,Benjamin,Anderson,104,benjamin.anderson@example.com,2023-10-25,true
+11,Charlotte,Thomas,102,charlotte.thomas@example.com,2023-11-08,true
+12,Mason,Jackson,103,mason.jackson@example.com,2023-12-03,true
+13,Amelia,White,101,amelia.white@example.com,2024-01-15,true
+14,Ethan,Harris,105,ethan.harris@example.com,2024-02-20,false
+15,Harper,Martin,104,harper.martin@example.com,2024-03-10,true

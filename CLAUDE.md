@@ -31,29 +31,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Architecture
 
-This is a TypeScript package with dual exports: a library and a CLI tool.
+This is a monorepo with two TypeScript packages:
 
 **Package Structure:**
-- **Library exports** (`src/index.ts`): Types and functions for CubeJS integration
-- **CLI tool** (`src/cli/`): Command-line interface for generating type definitions
-- **Tests** (`tests/`): Test files using Vitest
+- **@general-dexterity/cube-records** (`packages/records/`): Library with types and functions for CubeJS integration
+- **@general-dexterity/cube-records-codegen** (`packages/codegen/`): CLI tool for generating type definitions from Cube.js schemas
+- **Tests**: Each package has its own test files using Vitest
 
-**Build Output:**
-- Library: `dist/index.js` + `dist/index.d.ts`
-- CLI: `dist/cli/index.js` (executable with shebang)
+**Records Package:**
+- Library exports: `dist/index.js` + `dist/index.d.ts`
+- ES Modules with CommonJS support
+- Peer dependencies: @cubejs-client/core and @cubejs-client/react
 
-**Key Technical Details:**
+**Codegen Package:**
+- CLI binary: `dist/cli/index.js` (executable with shebang)
 - ES Modules only (`"type": "module"`)
 - CLI reads package.json at runtime for version using ESM path resolution
-- TypeScript compiles to ES2022 with ESNext modules
 - Uses Commander.js for CLI argument parsing
 - Tests can execute the built CLI using Node.js child_process
-
-**Package Distribution:**
-- Main entry: `dist/index.js`
-- Types: `dist/index.d.ts` 
-- Binary: `dist/cli/index.js` (as `cube-records` command)
-- Peer dependencies: @cubejs-client/core and @cubejs-client/react
 
 ## Code Style Guidelines
 

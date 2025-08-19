@@ -1,0 +1,52 @@
+cubes:
+  - name: orders
+    sql_table: main.orders
+    data_source: default
+
+    joins:
+      - name: users
+        sql: "{CUBE}.user_id = {users.id}"
+        relationship: many_to_one
+
+    dimensions:
+      - name: id
+        sql: id
+        type: number
+        primary_key: true
+
+      - name: shipping_country
+        sql: shipping_country
+        type: string
+
+      - name: status
+        sql: status
+        type: string
+
+      - name: order_date
+        sql: order_date
+        type: time
+
+    measures:
+      - name: count
+        type: count
+
+      - name: discount_amount
+        sql: discount_amount
+        type: sum
+
+      - name: shipping_cost
+        sql: shipping_cost
+        type: sum
+
+      - name: tax_amount
+        sql: tax_amount
+        type: sum
+
+      - name: total_amount
+        sql: total_amount
+        type: sum
+
+    pre_aggregations:
+      # Pre-aggregation definitions go here.
+      # Learn more in the documentation: https://cube.dev/docs/caching/pre-aggregations/getting-started
+
