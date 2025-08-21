@@ -141,6 +141,15 @@ describe('OutputWriter', () => {
 
     expect(existsSync(testFilePath)).toBe(true);
     const fileContent = await readFile(testFilePath, 'utf8');
-    expect(fileContent).toBe('');
+    const expectedHeader = `/**
+ * This file is auto-generated. Do not edit it directly.
+ * Any changes made to this file will be overwritten when regenerated.
+ */
+
+/* eslint-disable */
+// @ts-nocheck
+
+`;
+    expect(fileContent).toBe(expectedHeader);
   });
 });

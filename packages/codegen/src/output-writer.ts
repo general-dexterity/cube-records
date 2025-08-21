@@ -6,8 +6,22 @@ const errorLogger = new Console(process.stderr);
 
 export class OutputWriter {
   async writeNodes(nodes: ts.Statement[], path: string): Promise<void> {
-    const content = this.printNodes(nodes);
+    const generatedContent = this.printNodes(nodes);
+    const header = this.getGeneratedFileHeader();
+    const content = header + generatedContent;
     await this.writeOutput(content, path);
+  }
+
+  private getGeneratedFileHeader(): string {
+    return `/**
+ * This file is auto-generated. Do not edit it directly.
+ * Any changes made to this file will be overwritten when regenerated.
+ */
+
+/* eslint-disable */
+// @ts-nocheck
+
+`;
   }
 
   async writeOutput(content: string, path: string): Promise<void> {
