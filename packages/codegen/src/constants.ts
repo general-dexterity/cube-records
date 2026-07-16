@@ -1,2 +1,2 @@
-export const ModelInterfaceNameSuffix = 'CubeModel';
-export const ViewInterfaceNameSuffix = 'CubeView';
+export const ModelInterfaceNameSuffix = "CubeModel";
+export const ViewInterfaceNameSuffix = "CubeView";

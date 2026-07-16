@@ -1,10 +1,10 @@
-import ts from 'typescript';
+import ts from "typescript";
 import type {
   CubeDefinitionWithRelations,
   DimensionDefinition,
   MeasureDefinition,
-} from './cube';
-import { cubeMeasureToPropertyName, dimensionTypeToTsType } from './utils';
+} from "./cube";
+import { cubeMeasureToPropertyName, dimensionTypeToTsType } from "./utils";
 
 export class TypeGenerator {
   generateTypes(definitions: CubeDefinitionWithRelations[]): ts.Statement[] {
@@ -13,12 +13,12 @@ export class TypeGenerator {
   }
 
   private createModuleAugmentation(
-    definitions: CubeDefinitionWithRelations[]
+    definitions: CubeDefinitionWithRelations[],
   ): ts.Statement[] {
     // Create the CubeRecordMap interface (without export modifier)
     const cubeRecordMap = ts.factory.createInterfaceDeclaration(
       undefined, // No modifiers
-      ts.factory.createIdentifier('CubeRecordMap'),
+      ts.factory.createIdentifier("CubeRecordMap"),
       [],
       undefined,
       definitions.map((definition) => {
@@ -31,33 +31,33 @@ export class TypeGenerator {
           ts.factory.createTypeLiteralNode([
             ts.factory.createPropertySignature(
               undefined,
-              ts.factory.createIdentifier('measures'),
+              ts.factory.createIdentifier("measures"),
               undefined,
-              this.createMeasuresType(definition.measures)
+              this.createMeasuresType(definition.measures),
             ),
             ts.factory.createPropertySignature(
               undefined,
-              ts.factory.createIdentifier('dimensions'),
+              ts.factory.createIdentifier("dimensions"),
               undefined,
-              this.createDimensionsType(definition.dimensions)
+              this.createDimensionsType(definition.dimensions),
             ),
             ts.factory.createPropertySignature(
               undefined,
-              ts.factory.createIdentifier('joins'),
+              ts.factory.createIdentifier("joins"),
               ts.factory.createToken(ts.SyntaxKind.QuestionToken),
-              this.createJoinsType(definition.joins)
+              this.createJoinsType(definition.joins),
             ),
-          ])
+          ]),
         );
-      })
+      }),
     );
 
     // Create an import statement
     const importDeclaration = ts.factory.createImportDeclaration(
       undefined,
       undefined,
-      ts.factory.createStringLiteral('@general-dexterity/cube-records'),
-      undefined
+      ts.factory.createStringLiteral("@general-dexterity/cube-records"),
+      undefined,
     );
 
     // Create an empty export statement
@@ -66,15 +66,15 @@ export class TypeGenerator {
       false,
       ts.factory.createNamedExports([]),
       undefined,
-      undefined
+      undefined,
     );
 
     // Create module augmentation with empty export first
     const moduleAugmentation = ts.factory.createModuleDeclaration(
       [ts.factory.createToken(ts.SyntaxKind.DeclareKeyword)],
-      ts.factory.createStringLiteral('@general-dexterity/cube-records'),
+      ts.factory.createStringLiteral("@general-dexterity/cube-records"),
       ts.factory.createModuleBlock([cubeRecordMap]),
-      ts.NodeFlags.None
+      ts.NodeFlags.None,
     );
 
     return [importDeclaration, moduleAugmentation, emptyExport];
@@ -89,11 +89,11 @@ export class TypeGenerator {
         const properties: ts.PropertySignature[] = [
           ts.factory.createPropertySignature(
             undefined,
-            ts.factory.createIdentifier('type'),
+            ts.factory.createIdentifier("type"),
             undefined,
             ts.factory.createKeywordTypeNode(
-              dimensionTypeToTsType(measure.type)
-            )
+              dimensionTypeToTsType(measure.type),
+            ),
           ),
         ];
 
@@ -102,12 +102,12 @@ export class TypeGenerator {
           properties.push(
             ts.factory.createPropertySignature(
               undefined,
-              ts.factory.createIdentifier('__cubetype'),
+              ts.factory.createIdentifier("__cubetype"),
               ts.factory.createToken(ts.SyntaxKind.QuestionToken),
               ts.factory.createLiteralTypeNode(
-                ts.factory.createStringLiteral(measure.type)
-              )
-            )
+                ts.factory.createStringLiteral(measure.type),
+              ),
+            ),
           );
         }
 
@@ -115,9 +115,9 @@ export class TypeGenerator {
           undefined,
           ts.factory.createIdentifier(propertyName),
           undefined,
-          ts.factory.createTypeLiteralNode(properties)
+          ts.factory.createTypeLiteralNode(properties),
         );
-      })
+      }),
     );
   }
 
@@ -130,11 +130,11 @@ export class TypeGenerator {
         const properties: ts.PropertySignature[] = [
           ts.factory.createPropertySignature(
             undefined,
-            ts.factory.createIdentifier('type'),
+            ts.factory.createIdentifier("type"),
             undefined,
             ts.factory.createKeywordTypeNode(
-              dimensionTypeToTsType(dimension.type)
-            )
+              dimensionTypeToTsType(dimension.type),
+            ),
           ),
         ];
 
@@ -143,12 +143,12 @@ export class TypeGenerator {
           properties.push(
             ts.factory.createPropertySignature(
               undefined,
-              ts.factory.createIdentifier('__cubetype'),
+              ts.factory.createIdentifier("__cubetype"),
               undefined, // Not optional for dimensions, as we need it for time filtering
               ts.factory.createLiteralTypeNode(
-                ts.factory.createStringLiteral(dimension.type)
-              )
-            )
+                ts.factory.createStringLiteral(dimension.type),
+              ),
+            ),
           );
         }
 
@@ -156,9 +156,9 @@ export class TypeGenerator {
           undefined,
           ts.factory.createIdentifier(propertyName),
           undefined,
-          ts.factory.createTypeLiteralNode(properties)
+          ts.factory.createTypeLiteralNode(properties),
         );
-      })
+      }),
     );
   }
 
@@ -172,9 +172,9 @@ export class TypeGenerator {
     return ts.factory.createTupleTypeNode(
       joins.map((join) =>
         ts.factory.createLiteralTypeNode(
-          ts.factory.createStringLiteral(join.toLowerCase())
-        )
-      )
+          ts.factory.createStringLiteral(join.toLowerCase()),
+        ),
+      ),
     );
   }
 }

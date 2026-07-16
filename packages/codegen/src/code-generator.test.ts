@@ -1,19 +1,19 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createMock } from '../tests/utils/mock';
-import { CodeGenerator } from './code-generator';
-import { DefinitionRetriever } from './definition-retriever';
-import { OutputWriter } from './output-writer';
-import { TypeGenerator } from './type-generator';
-import type { TypeGeneratorOptions } from './types';
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createMock } from "../tests/utils/mock";
+import { CodeGenerator } from "./code-generator";
+import { DefinitionRetriever } from "./definition-retriever";
+import { OutputWriter } from "./output-writer";
+import { TypeGenerator } from "./type-generator";
+import type { TypeGeneratorOptions } from "./types";
 
-vi.mock('./definition-retriever');
-vi.mock('./output-writer');
-vi.mock('./type-generator');
+vi.mock("./definition-retriever");
+vi.mock("./output-writer");
+vi.mock("./type-generator");
 
-describe('CodeGenerator', () => {
+describe("CodeGenerator", () => {
   const mockOptions: TypeGeneratorOptions = {
-    baseUrl: 'http://localhost:4000/cubejs-api',
-    output: 'output.ts',
+    baseUrl: "http://localhost:4000/cubejs-api",
+    output: "output.ts",
     exclude: [],
     watch: false,
     watchDelay: 5000,
@@ -21,26 +21,26 @@ describe('CodeGenerator', () => {
 
   const mockDefinitions = [
     {
-      name: 'Orders',
-      type: 'cube' as const,
-      title: 'Orders',
+      name: "Orders",
+      type: "cube" as const,
+      title: "Orders",
       isVisible: true,
       public: true,
       measures: [],
       dimensions: [],
       segments: [],
-      joins: ['Users'],
+      joins: ["Users"],
     },
     {
-      name: 'Users',
-      type: 'cube' as const,
-      title: 'Users',
+      name: "Users",
+      type: "cube" as const,
+      title: "Users",
       isVisible: true,
       public: true,
       measures: [],
       dimensions: [],
       segments: [],
-      joins: ['Orders'],
+      joins: ["Orders"],
     },
   ];
 
@@ -48,29 +48,29 @@ describe('CodeGenerator', () => {
     vi.clearAllMocks();
   });
 
-  it('runs the code generation process', async () => {
+  it("runs the code generation process", async () => {
     const mockRetrieveDefinitions = vi.fn().mockResolvedValue(mockDefinitions);
     const mockGenerateTypes = vi.fn().mockReturnValue([]);
     const mockWriteNodes = vi.fn().mockResolvedValue(undefined);
 
-    vi.mocked(DefinitionRetriever).mockImplementation(() =>
-      createMock<DefinitionRetriever>({
+    vi.mocked(DefinitionRetriever).mockImplementation(function () {
+      return createMock<DefinitionRetriever>({
         retrieveDefinitions: mockRetrieveDefinitions,
-      })
-    );
+      });
+    });
 
-    vi.mocked(TypeGenerator).mockImplementation(() =>
-      createMock<TypeGenerator>({
+    vi.mocked(TypeGenerator).mockImplementation(function () {
+      return createMock<TypeGenerator>({
         generateTypes: mockGenerateTypes,
-      })
-    );
+      });
+    });
 
-    vi.mocked(OutputWriter).mockImplementation(() =>
-      createMock<OutputWriter>({
+    vi.mocked(OutputWriter).mockImplementation(function () {
+      return createMock<OutputWriter>({
         writeNodes: mockWriteNodes,
         writeOutput: vi.fn(),
-      })
-    );
+      });
+    });
 
     await CodeGenerator.run(mockOptions);
 
@@ -80,41 +80,41 @@ describe('CodeGenerator', () => {
     expect(mockWriteNodes).toHaveBeenCalledWith([], mockOptions.output);
   });
 
-  it('filters excluded definitions', async () => {
+  it("filters excluded definitions", async () => {
     const optionsWithExclude: TypeGeneratorOptions = {
       ...mockOptions,
-      exclude: ['Users'],
+      exclude: ["Users"],
     };
 
     const mockRetrieveDefinitions = vi.fn().mockResolvedValue(mockDefinitions);
     const mockGenerateTypes = vi.fn().mockReturnValue([]);
     const mockWriteNodes = vi.fn().mockResolvedValue(undefined);
 
-    vi.mocked(DefinitionRetriever).mockImplementation(() =>
-      createMock<DefinitionRetriever>({
+    vi.mocked(DefinitionRetriever).mockImplementation(function () {
+      return createMock<DefinitionRetriever>({
         retrieveDefinitions: mockRetrieveDefinitions,
-      })
-    );
+      });
+    });
 
-    vi.mocked(TypeGenerator).mockImplementation(() =>
-      createMock<TypeGenerator>({
+    vi.mocked(TypeGenerator).mockImplementation(function () {
+      return createMock<TypeGenerator>({
         generateTypes: mockGenerateTypes,
-      })
-    );
+      });
+    });
 
-    vi.mocked(OutputWriter).mockImplementation(() =>
-      createMock<OutputWriter>({
+    vi.mocked(OutputWriter).mockImplementation(function () {
+      return createMock<OutputWriter>({
         writeNodes: mockWriteNodes,
         writeOutput: vi.fn(),
-      })
-    );
+      });
+    });
 
     await CodeGenerator.run(optionsWithExclude);
 
     expect(mockGenerateTypes).toHaveBeenCalledWith([mockDefinitions[0]]);
   });
 
-  it('runs in watch mode', async () => {
+  it("runs in watch mode", async () => {
     const optionsWithWatch: TypeGeneratorOptions = {
       ...mockOptions,
       watch: true,
@@ -125,24 +125,24 @@ describe('CodeGenerator', () => {
     const mockGenerateTypes = vi.fn().mockReturnValue([]);
     const mockWriteNodes = vi.fn().mockResolvedValue(undefined);
 
-    vi.mocked(DefinitionRetriever).mockImplementation(() =>
-      createMock<DefinitionRetriever>({
+    vi.mocked(DefinitionRetriever).mockImplementation(function () {
+      return createMock<DefinitionRetriever>({
         retrieveDefinitions: mockRetrieveDefinitions,
-      })
-    );
+      });
+    });
 
-    vi.mocked(TypeGenerator).mockImplementation(() =>
-      createMock<TypeGenerator>({
+    vi.mocked(TypeGenerator).mockImplementation(function () {
+      return createMock<TypeGenerator>({
         generateTypes: mockGenerateTypes,
-      })
-    );
+      });
+    });
 
-    vi.mocked(OutputWriter).mockImplementation(() =>
-      createMock<OutputWriter>({
+    vi.mocked(OutputWriter).mockImplementation(function () {
+      return createMock<OutputWriter>({
         writeNodes: mockWriteNodes,
         writeOutput: vi.fn(),
-      })
-    );
+      });
+    });
 
     // Start the generator
     const generatorPromise = CodeGenerator.run(optionsWithWatch);
@@ -162,22 +162,22 @@ describe('CodeGenerator', () => {
     expect(mockWriteNodes).toHaveBeenCalled();
   });
 
-  it('handles errors during generation', async () => {
-    const error = new Error('Network error');
+  it("handles errors during generation", async () => {
+    const error = new Error("Network error");
     const mockRetrieveDefinitions = vi.fn().mockRejectedValue(error);
 
-    vi.mocked(DefinitionRetriever).mockImplementation(() =>
-      createMock<DefinitionRetriever>({
+    vi.mocked(DefinitionRetriever).mockImplementation(function () {
+      return createMock<DefinitionRetriever>({
         retrieveDefinitions: mockRetrieveDefinitions,
-      })
-    );
+      });
+    });
 
     await expect(CodeGenerator.run(mockOptions)).rejects.toThrow(
-      'Network error'
+      "Network error",
     );
   });
 
-  it('creates instance with correct options', () => {
+  it("creates instance with correct options", () => {
     const generator = new CodeGenerator(mockOptions) as unknown as {
       options: TypeGeneratorOptions;
       typeGenerator: TypeGenerator;

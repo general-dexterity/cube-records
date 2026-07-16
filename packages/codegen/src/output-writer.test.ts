@@ -1,14 +1,14 @@
-import { existsSync } from 'node:fs';
-import { readFile, unlink } from 'node:fs/promises';
-import { join } from 'node:path';
-import ts from 'typescript';
-import { afterEach, describe, expect, it } from 'vitest';
-import { OutputWriter } from './output-writer';
+import { existsSync } from "node:fs";
+import { readFile, unlink } from "node:fs/promises";
+import { join } from "node:path";
+import ts from "typescript";
+import { afterEach, describe, expect, it } from "vitest";
+import { OutputWriter } from "./output-writer";
 
-describe('OutputWriter', () => {
+describe("OutputWriter", () => {
   const outputWriter = new OutputWriter();
-  const testContent = 'interface Test {\n  name: string;\n}';
-  const testFilePath = join(process.cwd(), 'test-output.ts');
+  const testContent = "interface Test {\n  name: string;\n}";
+  const testFilePath = join(process.cwd(), "test-output.ts");
 
   afterEach(async () => {
     // Clean up test file if it exists
@@ -18,129 +18,127 @@ describe('OutputWriter', () => {
   });
 
   it('writes content to stdout when path is "-"', async () => {
-    await outputWriter.writeOutput(testContent, '-');
+    await outputWriter.writeOutput(testContent, "-");
 
-    // biome-ignore lint/suspicious/noConsole: Testing console output is the purpose of this test
     expect(console.log).toHaveBeenCalledWith(testContent);
   });
 
-  it('writes content to file when path is provided', async () => {
+  it("writes content to file when path is provided", async () => {
     await outputWriter.writeOutput(testContent, testFilePath);
 
     expect(existsSync(testFilePath)).toBe(true);
-    const fileContent = await readFile(testFilePath, 'utf8');
+    const fileContent = await readFile(testFilePath, "utf8");
     expect(fileContent).toBe(testContent);
   });
 
-  it('handles empty content', async () => {
-    const emptyContent = '';
+  it("handles empty content", async () => {
+    const emptyContent = "";
     await outputWriter.writeOutput(emptyContent, testFilePath);
 
     expect(existsSync(testFilePath)).toBe(true);
-    const fileContent = await readFile(testFilePath, 'utf8');
-    expect(fileContent).toBe('');
+    const fileContent = await readFile(testFilePath, "utf8");
+    expect(fileContent).toBe("");
   });
 
-  it('handles UTF-8 content correctly', async () => {
+  it("handles UTF-8 content correctly", async () => {
     const utf8Content =
       'interface Test {\n  emoji: "🚀";\n  unicode: "héllo";\n}';
     await outputWriter.writeOutput(utf8Content, testFilePath);
 
     expect(existsSync(testFilePath)).toBe(true);
-    const fileContent = await readFile(testFilePath, 'utf8');
+    const fileContent = await readFile(testFilePath, "utf8");
     expect(fileContent).toBe(utf8Content);
   });
 
-  it('throws error when file write fails', async () => {
-    const invalidPath = '/nonexistent/directory/file.ts';
+  it("throws error when file write fails", async () => {
+    const invalidPath = "/nonexistent/directory/file.ts";
 
     await expect(
-      outputWriter.writeOutput(testContent, invalidPath)
+      outputWriter.writeOutput(testContent, invalidPath),
     ).rejects.toThrow();
   });
 
-  it('overwrites existing file content', async () => {
+  it("overwrites existing file content", async () => {
     // First write
-    await outputWriter.writeOutput('original content', testFilePath);
-    let fileContent = await readFile(testFilePath, 'utf8');
-    expect(fileContent).toBe('original content');
+    await outputWriter.writeOutput("original content", testFilePath);
+    let fileContent = await readFile(testFilePath, "utf8");
+    expect(fileContent).toBe("original content");
 
     // Second write (overwrite)
     await outputWriter.writeOutput(testContent, testFilePath);
-    fileContent = await readFile(testFilePath, 'utf8');
+    fileContent = await readFile(testFilePath, "utf8");
     expect(fileContent).toBe(testContent);
   });
 
-  it('handles large content', async () => {
+  it("handles large content", async () => {
     const largeContent =
-      'interface Test {\n' +
-      Array.from({ length: 1000 }, (_, i) => `  prop${i}: string;`).join('\n') +
-      '\n}';
+      "interface Test {\n" +
+      Array.from({ length: 1000 }, (_, i) => `  prop${i}: string;`).join("\n") +
+      "\n}";
 
     await outputWriter.writeOutput(largeContent, testFilePath);
 
     expect(existsSync(testFilePath)).toBe(true);
-    const fileContent = await readFile(testFilePath, 'utf8');
+    const fileContent = await readFile(testFilePath, "utf8");
     expect(fileContent).toBe(largeContent);
   });
 
-  it('writes TypeScript nodes to file', async () => {
+  it("writes TypeScript nodes to file", async () => {
     // Create a simple TypeScript interface declaration
     const interfaceDeclaration = ts.factory.createInterfaceDeclaration(
       [],
-      ts.factory.createIdentifier('TestInterface'),
+      ts.factory.createIdentifier("TestInterface"),
       [],
       undefined,
       [
         ts.factory.createPropertySignature(
           undefined,
-          ts.factory.createIdentifier('name'),
+          ts.factory.createIdentifier("name"),
           undefined,
-          ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword)
+          ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
         ),
-      ]
+      ],
     );
 
     const nodes = [interfaceDeclaration];
     await outputWriter.writeNodes(nodes, testFilePath);
 
     expect(existsSync(testFilePath)).toBe(true);
-    const fileContent = await readFile(testFilePath, 'utf8');
-    expect(fileContent).toContain('interface TestInterface');
-    expect(fileContent).toContain('name: string');
+    const fileContent = await readFile(testFilePath, "utf8");
+    expect(fileContent).toContain("interface TestInterface");
+    expect(fileContent).toContain("name: string");
   });
 
-  it('writes TypeScript nodes to stdout', async () => {
+  it("writes TypeScript nodes to stdout", async () => {
     const interfaceDeclaration = ts.factory.createInterfaceDeclaration(
       [],
-      ts.factory.createIdentifier('TestInterface'),
+      ts.factory.createIdentifier("TestInterface"),
       [],
       undefined,
       [
         ts.factory.createPropertySignature(
           undefined,
-          ts.factory.createIdentifier('name'),
+          ts.factory.createIdentifier("name"),
           undefined,
-          ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword)
+          ts.factory.createKeywordTypeNode(ts.SyntaxKind.StringKeyword),
         ),
-      ]
+      ],
     );
 
     const nodes = [interfaceDeclaration];
-    await outputWriter.writeNodes(nodes, '-');
+    await outputWriter.writeNodes(nodes, "-");
 
-    // biome-ignore lint/suspicious/noConsole: Testing console output is the purpose of this test
     expect(console.log).toHaveBeenCalledWith(
-      expect.stringContaining('interface TestInterface')
+      expect.stringContaining("interface TestInterface"),
     );
   });
 
-  it('handles empty TypeScript nodes array', async () => {
+  it("handles empty TypeScript nodes array", async () => {
     const nodes: ts.Declaration[] = [];
     await outputWriter.writeNodes(nodes, testFilePath);
 
     expect(existsSync(testFilePath)).toBe(true);
-    const fileContent = await readFile(testFilePath, 'utf8');
+    const fileContent = await readFile(testFilePath, "utf8");
     const expectedHeader = `/**
  * This file is auto-generated. Do not edit it directly.
  * Any changes made to this file will be overwritten when regenerated.

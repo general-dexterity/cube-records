@@ -1,4 +1,4 @@
-import { type Mock, type MockInstance, vi } from 'vitest';
+import { type Mock, type MockInstance, vi } from "vitest";
 
 type DeepPartial<T> = {
   [P in keyof T]?: T[P] extends Array<infer U>
@@ -26,25 +26,25 @@ export type DeepMocked<T> = {
 } & T;
 
 const jestFnProps = new Set([
-  '_isMockFunction',
-  'mock',
-  'mockClear',
-  'mockImplementation',
-  'mockImplementationOnce',
-  'mockName',
-  'getMockName',
-  'getMockImplementation',
-  'mockRejectedValue',
-  'mockRejectedValueOnce',
-  'mockReset',
-  'mockResolvedValue',
-  'mockResolvedValueOnce',
-  'mockRestore',
-  'mockReturnThis',
-  'mockReturnValue',
-  'mockReturnValueOnce',
-  'withImplementation',
-  'calls',
+  "_isMockFunction",
+  "mock",
+  "mockClear",
+  "mockImplementation",
+  "mockImplementationOnce",
+  "mockName",
+  "getMockName",
+  "getMockImplementation",
+  "mockRejectedValue",
+  "mockRejectedValueOnce",
+  "mockReset",
+  "mockResolvedValue",
+  "mockResolvedValueOnce",
+  "mockRestore",
+  "mockReturnThis",
+  "mockReturnValue",
+  "mockReturnValueOnce",
+  "withImplementation",
+  "calls",
 ]);
 
 const createProxy: {
@@ -53,15 +53,14 @@ const createProxy: {
 } = <T extends object | Mock>(name: string, base?: T): T => {
   const cache = new Map<string | number | symbol, unknown>();
   const handler: ProxyHandler<T> = {
-    // biome-ignore lint/complexity/noExcessiveCognitiveComplexity: shhhhh
     get: (obj, prop, receiver) => {
       const propName = prop.toString();
 
       if (
-        prop === 'inspect' ||
-        prop === 'then' ||
-        prop === 'asymmetricMatch' ||
-        (typeof prop === 'symbol' && propName === 'Symbol(util.inspect.custom)')
+        prop === "inspect" ||
+        prop === "then" ||
+        prop === "asymmetricMatch" ||
+        (typeof prop === "symbol" && propName === "Symbol(util.inspect.custom)")
       ) {
         return;
       }
@@ -81,9 +80,8 @@ const createProxy: {
 
       if (prop in obj) {
         mockedProp =
-          typeof checkProp === 'function' ? vi.fn(checkProp) : checkProp;
-      } else if (prop === 'constructor') {
-        // biome-ignore lint/suspicious/noEmptyBlockStatements: shhhhh
+          typeof checkProp === "function" ? vi.fn(checkProp) : checkProp;
+      } else if (prop === "constructor") {
         mockedProp = () => {};
       } else {
         mockedProp = createProxy(`${name}.${propName}`);
@@ -105,24 +103,24 @@ const createProxy: {
         return result;
       }
 
-      if (!cache.has('__apply')) {
-        cache.set('__apply', createProxy(name));
+      if (!cache.has("__apply")) {
+        cache.set("__apply", createProxy(name));
       }
-      return cache.get('__apply');
+      return cache.get("__apply");
     };
   }
   return new Proxy(base || (vi.fn() as T), handler);
 };
 
-export type MockOptions = {
+export interface MockOptions {
   name?: string;
-};
+}
 
 export const createMock = <T extends object>(
   partial: PartialFuncReturn<T> = {},
-  options: MockOptions = {}
+  options: MockOptions = {},
 ): DeepMocked<T> => {
-  const { name = 'mock' } = options;
+  const { name = "mock" } = options;
   const proxy = createProxy<T>(name, partial as T);
   return proxy as DeepMocked<T>;
 };

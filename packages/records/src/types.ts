@@ -2,10 +2,10 @@
  * Base interface for defining a CubeRecord.
  */
 export interface CubeRecordDefinition {
-  name: string;
-  measures: Record<string, { type: unknown; __cubetype?: string }>;
   dimensions: Record<string, { type: unknown; __cubetype?: string }>;
   joins?: readonly string[];
+  measures: Record<string, { type: unknown; __cubetype?: string }>;
+  name: string;
   segments?: readonly string[];
 }
 
@@ -24,11 +24,12 @@ export interface CubeRecordDefinition {
  * }
  */
 
-// biome-ignore lint/suspicious/noEmptyInterface: To allow users to extend this interface.
+// CubeRecordMap is intentionally empty by default — users augment it
+// via declaration merging to add their own cube record definitions.
 export interface CubeRecordMap {
   __empty: {
-    measures: {};
-    dimensions: {};
+    measures: Record<string, never>;
+    dimensions: Record<string, never>;
     joins: [];
   };
 }
@@ -42,24 +43,24 @@ export type CubeRecordName = keyof CubeRecordMap;
  * Extracts measure names from a specific cube record
  */
 type CubeRecordMeasure<T extends CubeRecordName> =
-  keyof CubeRecordMap[T]['measures'] & string;
+  keyof CubeRecordMap[T]["measures"] & string;
 
 /**
  * Extracts dimension names from a specific cube record
  */
 type CubeRecordDimension<T extends CubeRecordName> =
-  keyof CubeRecordMap[T]['dimensions'] & string;
+  keyof CubeRecordMap[T]["dimensions"] & string;
 
 /**
  * Creates measure names from joined cube records
  */
 type JoinedCubeRecordMeasure<T extends CubeRecordName> =
   T extends CubeRecordName
-    ? CubeRecordMap[T]['joins'] extends infer J
+    ? CubeRecordMap[T]["joins"] extends infer J
       ? J extends readonly string[]
         ? J[number] extends infer JoinName
           ? JoinName extends CubeRecordName
-            ? `${JoinName}.${keyof CubeRecordMap[JoinName]['measures'] & string}`
+            ? `${JoinName}.${keyof CubeRecordMap[JoinName]["measures"] & string}`
             : never
           : never
         : never
@@ -71,11 +72,11 @@ type JoinedCubeRecordMeasure<T extends CubeRecordName> =
  */
 type JoinedCubeRecordDimension<T extends CubeRecordName> =
   T extends CubeRecordName
-    ? CubeRecordMap[T]['joins'] extends infer J
+    ? CubeRecordMap[T]["joins"] extends infer J
       ? J extends readonly string[]
         ? J[number] extends infer JoinName
           ? JoinName extends CubeRecordName
-            ? `${JoinName}.${keyof CubeRecordMap[JoinName]['dimensions'] & string}`
+            ? `${JoinName}.${keyof CubeRecordMap[JoinName]["dimensions"] & string}`
             : never
           : never
         : never
@@ -114,14 +115,14 @@ type ExtractCubeRecordMeasureTypes<
   : {
       [K in M[number]]: K extends `${infer J}.${infer D}`
         ? J extends keyof CubeRecordMap
-          ? D extends keyof CubeRecordMap[J]['measures']
-            ? CubeRecordMap[J]['measures'][D] extends { type: infer R }
+          ? D extends keyof CubeRecordMap[J]["measures"]
+            ? CubeRecordMap[J]["measures"][D] extends { type: infer R }
               ? R
               : unknown
             : unknown
           : unknown
-        : K extends keyof CubeRecordMap[N]['measures']
-          ? CubeRecordMap[N]['measures'][K] extends { type: infer R }
+        : K extends keyof CubeRecordMap[N]["measures"]
+          ? CubeRecordMap[N]["measures"][K] extends { type: infer R }
             ? R
             : unknown
           : unknown;
@@ -138,14 +139,14 @@ type ExtractCubeRecordDimensionTypes<
   : {
       [K in D[number]]: K extends `${infer J}.${infer Dim}`
         ? J extends keyof CubeRecordMap
-          ? Dim extends keyof CubeRecordMap[J]['dimensions']
-            ? CubeRecordMap[J]['dimensions'][Dim] extends { type: infer R }
+          ? Dim extends keyof CubeRecordMap[J]["dimensions"]
+            ? CubeRecordMap[J]["dimensions"][Dim] extends { type: infer R }
               ? R
               : unknown
             : unknown
           : unknown
-        : K extends keyof CubeRecordMap[N]['dimensions']
-          ? CubeRecordMap[N]['dimensions'][K] extends { type: infer R }
+        : K extends keyof CubeRecordMap[N]["dimensions"]
+          ? CubeRecordMap[N]["dimensions"][K] extends { type: infer R }
             ? R
             : unknown
           : unknown;
@@ -164,8 +165,8 @@ export type CubeRecordQueryRow<
  * Extracts only time dimensions from a cube record
  */
 export type CubeRecordTimeDimension<N extends CubeRecordName> = {
-  [K in CubeRecordDimension<N>]: CubeRecordMap[N]['dimensions'][K] extends {
-    __cubetype: 'time';
+  [K in CubeRecordDimension<N>]: CubeRecordMap[N]["dimensions"][K] extends {
+    __cubetype: "time";
   }
     ? K
     : never;
@@ -176,17 +177,17 @@ export type CubeRecordTimeDimension<N extends CubeRecordName> = {
  */
 type JoinedCubeRecordTimeDimension<T extends CubeRecordName> =
   T extends CubeRecordName
-    ? CubeRecordMap[T]['joins'] extends infer J
+    ? CubeRecordMap[T]["joins"] extends infer J
       ? J extends readonly string[]
         ? J[number] extends infer JoinName
           ? JoinName extends CubeRecordName
             ? {
-                [K in keyof CubeRecordMap[JoinName]['dimensions']]: CubeRecordMap[JoinName]['dimensions'][K] extends {
-                  __cubetype: 'time';
+                [K in keyof CubeRecordMap[JoinName]["dimensions"]]: CubeRecordMap[JoinName]["dimensions"][K] extends {
+                  __cubetype: "time";
                 }
                   ? `${JoinName}.${K & string}`
                   : never;
-              }[keyof CubeRecordMap[JoinName]['dimensions']]
+              }[keyof CubeRecordMap[JoinName]["dimensions"]]
             : never
           : never
         : never
@@ -238,12 +239,12 @@ type AllString<T> = T extends string ? true : false;
  * Helper to get all measure types for a cube
  */
 type GetAllMeasureTypes<N extends CubeRecordName> = {
-  [K in keyof CubeRecordMap[N]['measures']]: CubeRecordMap[N]['measures'][K] extends {
+  [K in keyof CubeRecordMap[N]["measures"]]: CubeRecordMap[N]["measures"][K] extends {
     type: infer T;
   }
     ? T
     : never;
-}[keyof CubeRecordMap[N]['measures']];
+}[keyof CubeRecordMap[N]["measures"]];
 
 /**
  * Smart measure type that infers the type based on all measures

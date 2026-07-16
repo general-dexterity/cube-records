@@ -1,24 +1,27 @@
-import { assert, describe, it, vi, expectTypeOf } from 'vitest';
-import type { CubeRecordDefinition } from '../src/types';
-import type { CubeRecordQueryResult } from '../src/use-cube-record-query';
-import type { CubeRecordQueryRow, RemapKeysWithModel } from '../src/types';
+import { assert, describe, expectTypeOf, it, vi } from "vitest";
+import type {
+  CubeRecordDefinition,
+  CubeRecordQueryRow,
+  RemapKeysWithModel,
+} from "../src/types";
+import type { CubeRecordQueryResult } from "../src/use-cube-record-query";
 
 // Type predicate functions for testing
 function isString(value: unknown): value is string {
-  return typeof value === 'string';
+  return typeof value === "string";
 }
 
 function isNumber(value: unknown): value is number {
-  return typeof value === 'number';
+  return typeof value === "number";
 }
 
 function isBoolean(value: unknown): value is boolean {
-  return typeof value === 'boolean';
+  return typeof value === "boolean";
 }
 
 function hasProperty<T extends object, K extends PropertyKey>(
   obj: T,
-  key: K
+  key: K,
 ): obj is T & Record<K, unknown> {
   return key in obj;
 }
@@ -27,41 +30,41 @@ function hasProperty<T extends object, K extends PropertyKey>(
 // Since the global interface is empty by default, we'll test
 // the type system mechanics directly with type assertions
 
-describe('Type Safety Tests', () => {
-  describe('CubeRecordDefinition structure', () => {
-    it('validates cube definition structure', () => {
+describe("Type Safety Tests", () => {
+  describe("CubeRecordDefinition structure", () => {
+    it("validates cube definition structure", () => {
       // Test that CubeRecordDefinition interface works correctly
       const validCube: CubeRecordDefinition = {
-        name: 'testCube',
+        dimensions: {
+          active: { type: false as boolean },
+          id: { type: "" as string },
+          name: { type: "" as string },
+        },
+        joins: ["otherCube"] as const,
         measures: {
           count: { type: 0 as number },
           total: { type: 0 as number },
         },
-        dimensions: {
-          id: { type: '' as string },
-          name: { type: '' as string },
-          active: { type: false as boolean },
-        },
-        joins: ['otherCube'] as const,
-        segments: ['activeSegment'] as const,
+        name: "testCube",
+        segments: ["activeSegment"] as const,
       };
 
-      assert(validCube.name === 'testCube');
-      assert('count' in validCube.measures);
-      assert('id' in validCube.dimensions);
-      assert(validCube.joins?.includes('otherCube'));
-      assert(validCube.segments?.includes('activeSegment'));
+      assert(validCube.name === "testCube");
+      assert("count" in validCube.measures);
+      assert("id" in validCube.dimensions);
+      assert(validCube.joins?.includes("otherCube"));
+      assert(validCube.segments?.includes("activeSegment"));
     });
 
-    it('handles optional properties correctly', () => {
+    it("handles optional properties correctly", () => {
       // Minimal cube definition
       const minimalCube: CubeRecordDefinition = {
-        name: 'minimal',
-        measures: {},
         dimensions: {},
+        measures: {},
+        name: "minimal",
       };
 
-      assert(minimalCube.name === 'minimal');
+      assert(minimalCube.name === "minimal");
       assert(Object.keys(minimalCube.measures).length === 0);
       assert(Object.keys(minimalCube.dimensions).length === 0);
       assert(minimalCube.joins === undefined);
@@ -69,19 +72,29 @@ describe('Type Safety Tests', () => {
     });
   });
 
-  describe('Type system mechanics', () => {
-    it('validates CubeRecordQueryResult strip flag typing', () => {
-      type Row = CubeRecordQueryRow<'users', ['count'], ['id', 'name']>;
-      type PrefixedRow = RemapKeysWithModel<'users', Row>;
+  describe("Type system mechanics", () => {
+    it("validates CubeRecordQueryResult strip flag typing", () => {
+      type Row = CubeRecordQueryRow<"users", ["count"], ["id", "name"]>;
+      type PrefixedRow = RemapKeysWithModel<"users", Row>;
 
-      type Stripped = CubeRecordQueryResult<'users', ['count'], ['id', 'name'], true>['data'][number];
-      type Kept = CubeRecordQueryResult<'users', ['count'], ['id', 'name'], false>['data'][number];
+      type Stripped = CubeRecordQueryResult<
+        "users",
+        ["count"],
+        ["id", "name"],
+        true
+      >["data"][number];
+      type Kept = CubeRecordQueryResult<
+        "users",
+        ["count"],
+        ["id", "name"],
+        false
+      >["data"][number];
 
       expectTypeOf<Stripped>().toEqualTypeOf<Row>();
       expectTypeOf<Kept>().toEqualTypeOf<PrefixedRow>();
     });
 
-    it('demonstrates type extraction patterns', () => {
+    it("demonstrates type extraction patterns", () => {
       // Test the pattern of type extraction that the system uses
       // This is a meta-test to ensure the type system works as expected
 
@@ -93,18 +106,18 @@ describe('Type Safety Tests', () => {
 
       // Runtime verification that types work correctly
       const numValue: NumberType = 42;
-      const strValue: StringType = 'test';
+      const strValue: StringType = "test";
 
       assert(isNumber(numValue));
       assert(isString(strValue));
     });
 
-    it('tests record type mapping patterns', () => {
+    it("tests record type mapping patterns", () => {
       // Test the pattern used for mapping cube records
-      type TestRecord = {
+      interface TestRecord {
         field1: { type: number };
         field2: { type: string };
-      };
+      }
 
       type ExtractTypes<T> = {
         [K in keyof T]: T[K] extends { type: infer R } ? R : unknown;
@@ -114,7 +127,7 @@ describe('Type Safety Tests', () => {
 
       const extracted: ExtractedTypes = {
         field1: 100,
-        field2: 'test',
+        field2: "test",
       };
 
       assert(isNumber(extracted.field1));
@@ -122,65 +135,65 @@ describe('Type Safety Tests', () => {
     });
   });
 
-  describe('Query parameter types', () => {
-    it('validates filter type structure', () => {
+  describe("Query parameter types", () => {
+    it("validates filter type structure", () => {
       // Test binary operator filter structure
-      type TestBinaryFilter = {
+      interface TestBinaryFilter {
         member: string;
-        operator: 'equals' | 'notEquals' | 'contains' | 'notContains';
+        operator: "equals" | "notEquals" | "contains" | "notContains";
         values: string[];
-      };
+      }
 
       const binaryFilter: TestBinaryFilter = {
-        member: 'testField',
-        operator: 'equals',
-        values: ['value1', 'value2'],
+        member: "testField",
+        operator: "equals",
+        values: ["value1", "value2"],
       };
 
-      assert(binaryFilter.member === 'testField');
-      assert(binaryFilter.operator === 'equals');
+      assert(binaryFilter.member === "testField");
+      assert(binaryFilter.operator === "equals");
       assert(Array.isArray(binaryFilter.values));
       assert(binaryFilter.values.length === 2);
 
       // Test unary operator filter structure
-      type TestUnaryFilter = {
+      interface TestUnaryFilter {
         member: string;
-        operator: 'set' | 'notSet';
+        operator: "set" | "notSet";
         values?: never;
-      };
+      }
 
       const unaryFilter: TestUnaryFilter = {
-        member: 'testField',
-        operator: 'set',
+        member: "testField",
+        operator: "set",
       };
 
-      assert(unaryFilter.member === 'testField');
-      assert(unaryFilter.operator === 'set');
-      assert(!('values' in unaryFilter));
+      assert(unaryFilter.member === "testField");
+      assert(unaryFilter.operator === "set");
+      assert(!("values" in unaryFilter));
     });
 
-    it('validates query result structure', () => {
+    it("validates query result structure", () => {
       // Test the structure of query results
-      type TestQueryResult<T> = {
-        isLoading: boolean;
-        error?: Error;
-        resultSet?: unknown;
-        refetch: () => Promise<void>;
+      interface TestQueryResult<T> {
         data: T[];
+        error?: Error;
+        isLoading: boolean;
+        refetch: () => Promise<void>;
+        resultSet?: unknown;
         totalResultCount: number | null;
-      };
+      }
 
-      type TestDataRow = {
+      interface TestDataRow {
         count: number;
         name: string;
-      };
+      }
 
       const mockResult: TestQueryResult<TestDataRow> = {
-        isLoading: false,
+        data: [{ count: 100, name: "Test" }],
         error: undefined,
-        resultSet: undefined,
+        isLoading: false,
         refetch: vi.fn(),
-        data: [{ count: 100, name: 'Test' }],
+        resultSet: undefined,
         totalResultCount: 1,
       };
 
@@ -189,28 +202,28 @@ describe('Type Safety Tests', () => {
       assert(mockResult.data.length === 1);
       assert(isNumber(mockResult.data[0].count));
       assert(isString(mockResult.data[0].name));
-      assert(typeof mockResult.refetch === 'function');
+      assert(typeof mockResult.refetch === "function");
       assert(mockResult.totalResultCount === 1);
     });
   });
 
-  describe('Complex type scenarios', () => {
-    it('handles union types correctly', () => {
+  describe("Complex type scenarios", () => {
+    it("handles union types correctly", () => {
       // Test union type handling
-      type MeasureOrDimension = 'measure1' | 'dimension1' | 'joined.measure';
+      type MeasureOrDimension = "measure1" | "dimension1" | "joined.measure";
 
       const values: MeasureOrDimension[] = [
-        'measure1',
-        'dimension1',
-        'joined.measure',
+        "measure1",
+        "dimension1",
+        "joined.measure",
       ];
 
-      assert(values.includes('measure1'));
-      assert(values.includes('dimension1'));
-      assert(values.includes('joined.measure'));
+      assert(values.includes("measure1"));
+      assert(values.includes("dimension1"));
+      assert(values.includes("joined.measure"));
     });
 
-    it('handles empty record types', () => {
+    it("handles empty record types", () => {
       // Test empty record handling
       type EmptyRecord = Record<string, never>;
 
@@ -219,14 +232,14 @@ describe('Type Safety Tests', () => {
       assert(Object.keys(empty).length === 0);
     });
 
-    it('validates type narrowing with predicates', () => {
+    it("validates type narrowing with predicates", () => {
       // Test our type predicate functions
-      const unknownValue: unknown = 'test';
+      const unknownValue: unknown = "test";
 
       if (isString(unknownValue)) {
         // TypeScript now knows this is a string
         const upperCase = unknownValue.toUpperCase();
-        assert(upperCase === 'TEST');
+        assert(upperCase === "TEST");
       }
 
       const numberValue: unknown = 42;
@@ -245,30 +258,30 @@ describe('Type Safety Tests', () => {
       }
     });
 
-    it('handles object property checking', () => {
-      const obj = { foo: 'bar', count: 42 };
+    it("handles object property checking", () => {
+      const obj = { count: 42, foo: "bar" };
 
-      if (hasProperty(obj, 'foo')) {
+      if (hasProperty(obj, "foo")) {
         // TypeScript knows obj has a 'foo' property
-        assert(obj.foo === 'bar');
+        assert(obj.foo === "bar");
       }
 
-      if (hasProperty(obj, 'count')) {
+      if (hasProperty(obj, "count")) {
         // TypeScript knows obj has a 'count' property
         assert(obj.count === 42);
       }
 
-      assert(!hasProperty(obj, 'missing'));
+      assert(!hasProperty(obj, "missing"));
     });
   });
 
-  describe('Type inference validation', () => {
-    it('validates conditional type patterns', () => {
+  describe("Type inference validation", () => {
+    it("validates conditional type patterns", () => {
       // Test conditional type patterns used in the library
       type IsString<T> = T extends string ? true : false;
       type IsNumber<T> = T extends number ? true : false;
 
-      type Test1 = IsString<'hello'>;
+      type Test1 = IsString<"hello">;
       type Test2 = IsNumber<42>;
       type Test3 = IsString<42>;
 
@@ -282,37 +295,37 @@ describe('Type Safety Tests', () => {
       assert(t3 === false);
     });
 
-    it('validates mapped type patterns', () => {
+    it("validates mapped type patterns", () => {
       // Test mapped type patterns
       type MakeOptional<T> = {
         [K in keyof T]?: T[K];
       };
 
-      type Original = {
+      interface Original {
         required1: string;
         required2: number;
-      };
+      }
 
       type Optional = MakeOptional<Original>;
 
       const partial: Optional = {
-        required1: 'test',
+        required1: "test",
         // required2 is optional
       };
 
-      assert(partial.required1 === 'test');
+      assert(partial.required1 === "test");
       assert(partial.required2 === undefined);
     });
 
-    it('validates template literal patterns', () => {
+    it("validates template literal patterns", () => {
       // Test template literal patterns for joined names
       type Prefix<T extends string> = `prefix.${T}`;
 
-      type Prefixed = Prefix<'field'>;
+      type Prefixed = Prefix<"field">;
 
-      const prefixed: Prefixed = 'prefix.field';
+      const prefixed: Prefixed = "prefix.field";
 
-      assert(prefixed === 'prefix.field');
+      assert(prefixed === "prefix.field");
     });
   });
 });
