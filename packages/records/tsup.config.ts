@@ -1,17 +1,17 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ['src/index.ts'],
-  format: ['cjs', 'esm'],
-  dts: true,
-  sourcemap: true,
   clean: true,
-  splitting: false,
-  outDir: 'dist',
+  dts: true,
+  entry: ["src/index.ts"],
   external: [
-    '@cubejs-client/core',
-    '@cubejs-client/react',
-    'react',
-    'react-dom',
+    "@cubejs-client/core",
+    "@cubejs-client/react",
+    "react",
+    "react-dom",
   ],
+  format: ["cjs", "esm"],
+  outDir: "dist",
+  sourcemap: true,
+  splitting: false,
 });

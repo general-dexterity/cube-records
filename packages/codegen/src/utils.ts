@@ -1,14 +1,14 @@
-import ts from 'typescript';
-import type { DimensionType } from './cube';
+import ts from "typescript";
+import type { DimensionType } from "./cube";
 
 export const dimensionTypeToTsType = (type: DimensionType) => {
   switch (type) {
-    case 'number':
+    case "number":
       return ts.SyntaxKind.NumberKeyword;
-    case 'string':
-    case 'time':
+    case "string":
+    case "time":
       return ts.SyntaxKind.StringKeyword;
-    case 'boolean':
+    case "boolean":
       return ts.SyntaxKind.BooleanKeyword;
     default:
       throw new Error(`Unknown dimension type: ${type}`);
@@ -22,7 +22,7 @@ export const cubeTitleToTsInterfaceName = (title: string) => {
 };
 
 export const cubeMeasureToPropertyName = (measure: string) => {
-  return measure.split('.')[1];
+  return measure.split(".")[1];
 };
 
 export const isNil = (value: unknown): value is null | undefined => {
@@ -39,10 +39,10 @@ const PART_PATTERN = /[.\-\s_]/;
 export const pascal = (str: string): string => {
   const parts = str?.split(PART_PATTERN).map((x) => x.toLowerCase()) ?? [];
   if (parts.length === 0) {
-    return '';
+    return "";
   }
 
   return parts
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join('');
+    .join("");
 };

@@ -1,8 +1,8 @@
-import { Console } from 'node:console';
-import { DefinitionRetriever } from './definition-retriever';
-import { OutputWriter } from './output-writer';
-import { TypeGenerator } from './type-generator';
-import type { TypeGeneratorOptions } from './types';
+import { Console } from "node:console";
+import { DefinitionRetriever } from "./definition-retriever";
+import { OutputWriter } from "./output-writer";
+import { TypeGenerator } from "./type-generator";
+import type { TypeGeneratorOptions } from "./types";
 
 const debugLogger = new Console(process.stderr);
 
@@ -30,15 +30,14 @@ export class CodeGenerator {
       shouldStop = !this.options.watch;
 
       // Retrieve definitions
-      // biome-ignore lint/nursery/noAwaitInLoop: Watch mode requires sequential execution
       const allDefinitions = await retriever.retrieveDefinitions();
       const excludedDefinitions = this.options.exclude;
 
       const definitions = allDefinitions.filter(
-        (definition) => !excludedDefinitions.includes(definition.name)
+        (definition) => !excludedDefinitions.includes(definition.name),
       );
 
-      debugLogger.debug('Generating types...');
+      debugLogger.debug("Generating types...");
 
       // Generate types
       const declarations = this.typeGenerator.generateTypes(definitions);
@@ -50,9 +49,9 @@ export class CodeGenerator {
         break;
       }
 
-      debugLogger.debug('Sleeping for %d ms...', this.options.watchDelay);
+      debugLogger.debug("Sleeping for %d ms...", this.options.watchDelay);
       await new Promise((resolve) =>
-        setTimeout(resolve, this.options.watchDelay)
+        setTimeout(resolve, this.options.watchDelay),
       );
     }
   }

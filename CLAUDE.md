@@ -58,3 +58,16 @@ This is a TypeScript package with dual exports: a library and a CLI tool.
 ## Code Style Guidelines
 
 - **Test descriptions**: Use third person for test descriptions (`it('outputs the correct version')` not `it('should output the correct version')`)
+
+## TypeScript Tooling
+
+This repo uses a **dual TypeScript setup** to get both the fast native compiler and the JS compiler API:
+
+- **Type checking** uses `tsc` (tsgo — the native Go compiler from TypeScript 7.0, installed as `@typescript/native`). This is ~3x faster than the JS compiler.
+- **Compiler API** (used by `packages/codegen` at runtime for AST generation, and by `tsup` for DTS emission) uses `typescript` aliased to `@typescript/typescript6` — TypeScript 7.0 removed the in-process compiler API entirely (the `typescript` package only exports a version string now). The stable replacement API won't land until TS 7.1.
+
+**Binaries:**
+- `tsc` → tsgo (TS 7 native, for type checking)
+- `tsc6` → TS 6 JS compiler (for the compiler API)
+
+**tsup patch:** `patches/tsup@8.5.1.patch` removes tsup's hardcoded `baseUrl: '.'` injection in its DTS pipeline, which is a hard error under TS 7's new defaults (and TS 6 deprecation). tsup is unmaintained, so this patch is required.

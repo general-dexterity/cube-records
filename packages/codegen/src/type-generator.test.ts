@@ -1,26 +1,26 @@
-import ts from 'typescript';
-import { assert, describe, expect, it } from 'vitest';
-import type { CubeDefinitionWithRelations } from './cube';
-import { TypeGenerator } from './type-generator';
+import ts from "typescript";
+import { assert, describe, expect, it } from "vitest";
+import type { CubeDefinitionWithRelations } from "./cube";
+import { TypeGenerator } from "./type-generator";
 
-describe('TypeGenerator', () => {
+describe("TypeGenerator", () => {
   const typeGenerator = new TypeGenerator();
 
   const mockCubeDefinition: CubeDefinitionWithRelations = {
-    name: 'Orders',
-    type: 'cube',
-    title: 'Orders',
+    name: "Orders",
+    type: "cube",
+    title: "Orders",
     isVisible: true,
     public: true,
     measures: [
       {
-        name: 'Orders.count',
-        title: 'Orders Count',
-        shortTitle: 'Count',
+        name: "Orders.count",
+        title: "Orders Count",
+        shortTitle: "Count",
         cumulativeTotal: false,
         cumulative: false,
-        type: 'number',
-        aggType: 'count',
+        type: "number",
+        aggType: "count",
         drillMembersGrouped: {
           measures: [],
           dimensions: [],
@@ -31,10 +31,10 @@ describe('TypeGenerator', () => {
     ],
     dimensions: [
       {
-        name: 'Orders.status',
-        title: 'Order Status',
-        type: 'string',
-        shortTitle: 'Status',
+        name: "Orders.status",
+        title: "Order Status",
+        type: "string",
+        shortTitle: "Status",
         suggestFilterValues: true,
         isVisible: true,
         public: true,
@@ -42,22 +42,22 @@ describe('TypeGenerator', () => {
       },
     ],
     segments: [],
-    joins: ['Users'],
+    joins: ["Users"],
   };
 
   const mockViewDefinition: CubeDefinitionWithRelations = {
-    name: 'OrdersView',
-    type: 'view',
-    title: 'Orders View',
+    name: "OrdersView",
+    type: "view",
+    title: "Orders View",
     isVisible: true,
     public: true,
     measures: [],
     dimensions: [
       {
-        name: 'OrdersView.id',
-        title: 'ID',
-        type: 'number',
-        shortTitle: 'ID',
+        name: "OrdersView.id",
+        title: "ID",
+        type: "number",
+        shortTitle: "ID",
         suggestFilterValues: false,
         isVisible: true,
         public: true,
@@ -68,7 +68,7 @@ describe('TypeGenerator', () => {
     joins: [],
   };
 
-  it('generates module augmentation for cube definitions', () => {
+  it("generates module augmentation for cube definitions", () => {
     const definitions = [mockCubeDefinition];
     const result = typeGenerator.generateTypes(definitions);
 
@@ -81,21 +81,21 @@ describe('TypeGenerator', () => {
     assert(ts.isStringLiteral(importDecl.moduleSpecifier));
 
     expect(importDecl.moduleSpecifier.text).toBe(
-      '@general-dexterity/cube-records'
+      "@general-dexterity/cube-records",
     );
 
     // Check for module declaration
     const moduleDecl = result[1];
     assert(ts.isModuleDeclaration(moduleDecl));
     assert(ts.isStringLiteral(moduleDecl.name));
-    expect(moduleDecl.name.text).toBe('@general-dexterity/cube-records');
+    expect(moduleDecl.name.text).toBe("@general-dexterity/cube-records");
 
     // Check for export declaration
     const exportDecl = result[2];
     assert(ts.isExportDeclaration(exportDecl));
   });
 
-  it('generates correct CubeRecordMap interface', () => {
+  it("generates correct CubeRecordMap interface", () => {
     const definitions = [mockCubeDefinition, mockViewDefinition];
     const result = typeGenerator.generateTypes(definitions);
 
@@ -108,7 +108,7 @@ describe('TypeGenerator', () => {
     assert(ts.isInterfaceDeclaration(moduleBlock.statements[0]));
 
     const cubeRecordMap = moduleBlock.statements[0];
-    expect(cubeRecordMap.name?.escapedText).toBe('CubeRecordMap');
+    expect(cubeRecordMap.name?.escapedText).toBe("CubeRecordMap");
     expect(cubeRecordMap.members.length).toBe(2); // orders and ordersview
 
     // Check orders property
@@ -116,17 +116,17 @@ describe('TypeGenerator', () => {
     assert(ts.isPropertySignature(ordersProperty));
     assert(ordersProperty.name);
     assert(ts.isIdentifier(ordersProperty.name));
-    expect(ordersProperty.name.escapedText).toBe('orders');
+    expect(ordersProperty.name.escapedText).toBe("orders");
 
     // Check ordersview property
     const ordersViewProperty = cubeRecordMap.members[1];
     assert(ts.isPropertySignature(ordersViewProperty));
     assert(ordersViewProperty.name);
     assert(ts.isIdentifier(ordersViewProperty.name));
-    expect(ordersViewProperty.name.escapedText).toBe('ordersview');
+    expect(ordersViewProperty.name.escapedText).toBe("ordersview");
   });
 
-  it('generates correct measures type', () => {
+  it("generates correct measures type", () => {
     const definitions = [mockCubeDefinition];
     const result = typeGenerator.generateTypes(definitions);
 
@@ -151,7 +151,7 @@ describe('TypeGenerator', () => {
       (m): m is ts.PropertySignature =>
         ts.isPropertySignature(m) &&
         ts.isIdentifier(m.name) &&
-        m.name?.escapedText === 'measures'
+        m.name?.escapedText === "measures",
     );
 
     expect(measuresProperty).toBeDefined();
@@ -164,10 +164,10 @@ describe('TypeGenerator', () => {
     const countProperty = measuresType.members[0];
     assert(ts.isPropertySignature(countProperty));
     assert(ts.isIdentifier(countProperty.name));
-    expect(countProperty.name.escapedText).toBe('count');
+    expect(countProperty.name.escapedText).toBe("count");
   });
 
-  it('generates correct dimensions type', () => {
+  it("generates correct dimensions type", () => {
     const definitions = [mockCubeDefinition];
     const result = typeGenerator.generateTypes(definitions);
 
@@ -192,7 +192,7 @@ describe('TypeGenerator', () => {
       (m): m is ts.PropertySignature =>
         ts.isPropertySignature(m) &&
         ts.isIdentifier(m.name) &&
-        m.name?.escapedText === 'dimensions'
+        m.name?.escapedText === "dimensions",
     );
 
     expect(dimensionsProperty).toBeDefined();
@@ -205,10 +205,10 @@ describe('TypeGenerator', () => {
     const statusProperty = dimensionsType.members[0];
     assert(ts.isPropertySignature(statusProperty));
     assert(ts.isIdentifier(statusProperty.name));
-    expect(statusProperty.name?.escapedText).toBe('status');
+    expect(statusProperty.name?.escapedText).toBe("status");
   });
 
-  it('generates correct joins type', () => {
+  it("generates correct joins type", () => {
     const definitions = [mockCubeDefinition];
     const result = typeGenerator.generateTypes(definitions);
 
@@ -233,7 +233,7 @@ describe('TypeGenerator', () => {
       (m): m is ts.PropertySignature =>
         ts.isPropertySignature(m) &&
         ts.isIdentifier(m.name) &&
-        m.name.escapedText === 'joins'
+        m.name.escapedText === "joins",
     );
 
     expect(joinsProperty).toBeDefined();
@@ -251,10 +251,10 @@ describe('TypeGenerator', () => {
     assert(ts.isStringLiteral(userLiteral.literal));
 
     const userString = userLiteral.literal;
-    expect(userString.text).toBe('users');
+    expect(userString.text).toBe("users");
   });
 
-  it('handles empty definitions array', () => {
+  it("handles empty definitions array", () => {
     const definitions: CubeDefinitionWithRelations[] = [];
     const result = typeGenerator.generateTypes(definitions);
 
@@ -272,11 +272,11 @@ describe('TypeGenerator', () => {
     expect(cubeRecordMap.members.length).toBe(0);
   });
 
-  it('handles definitions with empty measures and dimensions', () => {
+  it("handles definitions with empty measures and dimensions", () => {
     const emptyDefinition: CubeDefinitionWithRelations = {
-      name: 'Empty',
-      type: 'cube',
-      title: 'Empty',
+      name: "Empty",
+      type: "cube",
+      title: "Empty",
       isVisible: true,
       public: true,
       measures: [],
@@ -300,7 +300,7 @@ describe('TypeGenerator', () => {
     assert(ts.isPropertySignature(emptyProperty));
 
     assert(ts.isIdentifier(emptyProperty.name));
-    expect(emptyProperty.name?.escapedText).toBe('empty');
+    expect(emptyProperty.name?.escapedText).toBe("empty");
 
     assert(emptyProperty.type);
     assert(ts.isTypeLiteralNode(emptyProperty.type));
@@ -310,13 +310,13 @@ describe('TypeGenerator', () => {
       (m): m is ts.PropertySignature =>
         ts.isPropertySignature(m) &&
         ts.isIdentifier(m.name) &&
-        m.name?.escapedText === 'measures'
+        m.name?.escapedText === "measures",
     );
     const dimensionsProperty = emptyType.members.find(
       (m): m is ts.PropertySignature =>
         ts.isPropertySignature(m) &&
         ts.isIdentifier(m.name) &&
-        m.name?.escapedText === 'dimensions'
+        m.name?.escapedText === "dimensions",
     );
 
     assert(measuresProperty?.type);
@@ -331,7 +331,7 @@ describe('TypeGenerator', () => {
     expect(dimensionsType.members.length).toBe(0);
   });
 
-  it('handles empty joins array correctly', () => {
+  it("handles empty joins array correctly", () => {
     const definitions = [mockViewDefinition];
     const result = typeGenerator.generateTypes(definitions);
 
@@ -355,7 +355,7 @@ describe('TypeGenerator', () => {
       (m): m is ts.PropertySignature =>
         ts.isPropertySignature(m) &&
         ts.isIdentifier(m.name) &&
-        m.name?.escapedText === 'joins'
+        m.name?.escapedText === "joins",
     );
 
     assert(joinsProperty?.type);

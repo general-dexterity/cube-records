@@ -1,7 +1,54 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.6/schema.json",
-  "extends": ["ultracite"],
+  "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
+  "plugins": [
+    "./node_modules/@aliou/biome-plugins/plugins/no-interpolated-classname.grit",
+    "./node_modules/@aliou/biome-plugins/plugins/no-js-import-extension.grit",
+    "./node_modules/@aliou/biome-plugins/plugins/no-ts-import-extension.grit",
+    "./node_modules/@aliou/biome-plugins/plugins/no-buried-await.grit",
+    "./node_modules/@aliou/biome-plugins/plugins/no-empty-catch.grit",
+    {
+      "path": "./node_modules/@aliou/biome-plugins/plugins/no-inner-types.grit",
+      "includes": ["packages/*/src/**"]
+    },
+    "./node_modules/@aliou/biome-plugins/plugins/no-inline-imports.grit"
+  ],
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
   "files": {
-    "includes": ["!dist/**", "!dist", "*.ts"]
-  }
+    "includes": ["**/*.ts", "**/*.tsx", "**/*.json"],
+    "ignoreUnknown": true
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended"
+    }
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "overrides": [
+    {
+      "includes": ["**/*.test.ts", "**/tests/**"],
+      "linter": {
+        "rules": {
+          "complexity": {
+            "useArrowFunction": "off"
+          }
+        }
+      }
+    }
+  ]
 }

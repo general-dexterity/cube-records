@@ -1,7 +1,19 @@
-import '@general-dexterity/cube-records';
+import "@general-dexterity/cube-records";
 
-declare module '@general-dexterity/cube-records' {
+declare module "@general-dexterity/cube-records" {
   interface CubeRecordMap {
+    orders: {
+      measures: {
+        count: { type: number };
+        totalAmount: { type: number };
+      };
+      dimensions: {
+        id: { type: string };
+        status: { type: string };
+        createdAt: { type: string };
+      };
+      joins: readonly ["users"];
+    };
     users: {
       measures: {
         count: { type: number };
@@ -13,19 +25,7 @@ declare module '@general-dexterity/cube-records' {
         email: { type: string };
         createdAt: { type: string };
       };
-      joins: readonly ['orders'];
-    };
-    orders: {
-      measures: {
-        count: { type: number };
-        totalAmount: { type: number };
-      };
-      dimensions: {
-        id: { type: string };
-        status: { type: string };
-        createdAt: { type: string };
-      };
-      joins: readonly ['users'];
+      joins: readonly ["orders"];
     };
   }
 }

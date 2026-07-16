@@ -15,14 +15,14 @@ export type {
   PickNumberFields,
   PickStringFields,
   StringFields,
-} from './types';
+} from "./types";
 export type {
   CubeRecordOrder,
   CubeRecordQueryFilter,
   CubeRecordQueryParams,
   CubeRecordQueryResult,
   CubeRecordTimeDimensionParam,
-  UseCubeRecordQueryProps,
   UseCubeRecordOptions,
-} from './use-cube-record-query';
-export { useCubeRecordQuery } from './use-cube-record-query';
+  UseCubeRecordQueryProps,
+} from "./use-cube-record-query";
+export { useCubeRecordQuery } from "./use-cube-record-query";
